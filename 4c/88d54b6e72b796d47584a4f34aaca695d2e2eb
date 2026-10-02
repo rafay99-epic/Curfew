@@ -1,0 +1,41 @@
+agents/linux/build-deb.sh
+  s_c63d89cb37b8bb::t_c8fbf843603429 1-29
+tools/demo/mine.json
+  s_c63d89cb37b8bb::t_1ba018f81653df 1-14
+protocol/vectors.json
+  s_c63d89cb37b8bb::t_2466a8fe6ef8b5 1-58
+agents/linux/test_agent.py
+  s_c63d89cb37b8bb::t_32023ab8632b78 20,38,72-86,90,92
+  s_c63d89cb37b8bb::t_ff1c6e41dc8099 150-161
+  s_c63d89cb37b8bb::t_71b11bc3fc08e6 1-19,21-37,39-71,87-89,91,93-149,162-261,281,321-366
+  s_c63d89cb37b8bb::t_60b596615a15d5 262-280,282-320
+tools/release.sh
+  s_c63d89cb37b8bb::t_71b11bc3fc08e6 3,12,17,48
+protocol/API.md
+  s_c63d89cb37b8bb::t_cd52a5b81c04dc 82-88
+README.md
+  s_c63d89cb37b8bb::t_4d1581f393a522 44,48,174-176,178,180,187-188,191
+tools/demo/pair.sh
+  s_c63d89cb37b8bb::t_1ba018f81653df 2,4-7
+tools/demo/app-pair.sh
+  s_c63d89cb37b8bb::t_1ba018f81653df 5
+tools/demo/agent.sh
+  s_c63d89cb37b8bb::t_1ba018f81653df 2,4-9,11-12,14-25,27
+  s_c63d89cb37b8bb::t_71b11bc3fc08e6 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4c88d54b6e72b796d47584a4f34aaca695d2e2eb",
+  "prompts": {},
+  "sessions": {
+    "s_c63d89cb37b8bb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d37dcc8e-e1c8-4ced-a6ae-8bfdc3f3ca77",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Abdul Rafay <99marafay@gmail.com>"
+    }
+  }
+}
