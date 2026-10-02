@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Publishes a new version of the laptop side of Curfew.
-#   1. put the new version number in agent/VERSION (it must go up, or apt sees no update)
+#   1. put the new version number in agents/linux/VERSION (it must go up, or apt sees no update)
 #   2. tools/release.sh           builds the package and publishes it
 #      tools/release.sh build     only builds dist/ (the package and the apt folder), publishes nothing
 # Publishing does two things: the apt folder goes to the gh-pages branch (GitHub Pages serves it;
@@ -9,12 +9,12 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
-VERSION="$(tr -d '[:space:]' < agent/VERSION)"
+VERSION="$(tr -d '[:space:]' < agents/linux/VERSION)"
 export GNUPGHOME="$ROOT/.apt-key"
 [ -d "$GNUPGHOME" ] || { echo "The signing key folder .apt-key/ is missing."; exit 1; }
 
 rm -rf dist && mkdir -p dist/site/apt
-DEB="$(agent/build-deb.sh dist)"
+DEB="$(agents/linux/build-deb.sh dist)"
 cp "$DEB" dist/curfew.deb                       # a name without the version, for the "latest" download link
 cp "$DEB" dist/site/apt/
 (
@@ -45,7 +45,7 @@ echo "Built $DEB and dist/site/apt"
 [ "${1:-}" = build ] && exit 0
 
 if gh release view "v$VERSION" >/dev/null 2>&1; then
-  echo "Version $VERSION is already released. Raise the number in agent/VERSION first."; exit 1
+  echo "Version $VERSION is already released. Raise the number in agents/linux/VERSION first."; exit 1
 fi
 URL="$(git remote get-url origin)"
 (

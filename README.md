@@ -41,11 +41,11 @@ sudo apt upgrade
 
 The new version is in use as soon as that finishes; there is no need to uninstall anything or restart, and paired phones and running timers are kept.
 
-A laptop where an earlier version was installed from the `agent` folder with `install.sh` does not need uninstalling either: install the package as above and it takes over, keeping the paired phones.
+A laptop where an earlier version was installed from the `agents/linux` folder with `install.sh` does not need uninstalling either: install the package as above and it takes over, keeping the paired phones.
 
 ### Without the internet
 
-Copy the `agent` folder onto the laptop (a USB stick is fine), open it in the file manager, right-click an empty area, choose **Open in Terminal** and run `sudo ./install.sh`. It builds and installs the same package.
+Copy the `agents/linux` folder onto the laptop (a USB stick is fine), open it in the file manager, right-click an empty area, choose **Open in Terminal** and run `sudo ./install.sh`. It builds and installs the same package.
 
 ## 2. Put the app on your phone
 
@@ -171,24 +171,24 @@ With only the password of their own standard account they cannot stop, change or
 
 | Path | What |
 |---|---|
-| `agent/curfew.py` | the whole laptop side: daemon and `curfew` command, Python standard library only |
-| `agent/debian/`, `agent/build-deb.sh`, `agent/VERSION` | the package: what it sets up after installing (`postinst`) and undoes when removed (`postrm`), and the script that builds it |
-| `agent/install.sh`, `agent/uninstall.sh`, `agent/curfew.service` | build-and-install from the folder, remove, systemd unit |
+| `agents/linux/curfew.py` | the whole laptop side: daemon and `curfew` command, Python standard library only |
+| `agents/linux/debian/`, `agents/linux/build-deb.sh`, `agents/linux/VERSION` | the package: what it sets up after installing (`postinst`) and undoes when removed (`postrm`), and the script that builds it |
+| `agents/linux/install.sh`, `agents/linux/uninstall.sh`, `agents/linux/curfew.service` | build-and-install from the folder, remove, systemd unit |
 | `tools/release.sh` | publishes a new version of the laptop side (see below) |
-| `agent/test_agent.py` | end-to-end tests against a real agent in dry-run mode: `python3 agent/test_agent.py` |
+| `agents/linux/test_agent.py` | end-to-end tests against a real agent in dry-run mode: `python3 agents/linux/test_agent.py` |
 | `android/` | the app (Kotlin, Jetpack Compose). Build with `android/build.sh` after `tools/setup-toolchain.sh` |
-| `API.md` | the small network protocol, for a second client later |
+| `protocol/API.md` | the small network protocol, for a second client later |
 | `tools/` | toolchain setup, emulator helpers, demo data |
 
 **Dry-run mode** runs the agent as a normal user on port 8787 and logs "would power off" instead of doing it
 (the internet block and the login approval are logged the same way):
 
 ```
-python3 agent/curfew.py --dry-run serve      # in one terminal
-python3 agent/curfew.py --dry-run pair       # in another: shows the QR code
+python3 agents/linux/curfew.py --dry-run serve      # in one terminal
+python3 agents/linux/curfew.py --dry-run pair       # in another: shows the QR code
 ```
 
-**Releasing a new version of the laptop side:** raise the number in `agent/VERSION`, commit, then run `tools/release.sh`. It builds the package, publishes the signed apt folder to the `gh-pages` branch (served at `https://sharjeelmazhar.github.io/Curfew/apt`, which is what `sudo apt update` reads on the laptops) and creates a GitHub release with the package and the app. `tools/release.sh build` only builds into `dist/`.
+**Releasing a new version of the laptop side:** raise the number in `agents/linux/VERSION`, commit, then run `tools/release.sh`. It builds the package, publishes the signed apt folder to the `gh-pages` branch (served at `https://sharjeelmazhar.github.io/Curfew/apt`, which is what `sudo apt update` reads on the laptops) and creates a GitHub release with the package and the app. `tools/release.sh build` only builds into `dist/`.
 
 The apt folder is signed with the key in `.apt-key/`, which is not in git. Keep a copy of that folder: without it no update can be published that the laptops will accept, and anyone who has it can publish software that the laptops install as administrator.
 

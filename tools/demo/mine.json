@@ -1,0 +1,14 @@
+{"name": "rafay-workstation",
+ "users": [
+  {"name": "rafay", "full": "Abdul Rafay", "admin": true, "state": "active"},
+  {"name": "work", "full": "Rafay (work)", "admin": false, "state": "locked"},
+  {"name": "guest", "full": "Guest", "admin": false, "state": "none"}],
+ "apps": {"rafay": [
+  {"name": "pnpm dev", "detail": "node /Users/rafay/Code/envpilot/node_modules/.bin/vite --port 5173", "age": 5400, "terminal": true},
+  {"name": "Ghostty", "detail": "", "age": 7200, "terminal": false},
+  {"name": "Zen Browser", "detail": "", "age": 9100, "terminal": false},
+  {"name": "Xcode", "detail": "", "age": 3000, "terminal": false},
+  {"name": "Claude Code", "detail": "claude --model opus", "age": 2600, "terminal": true}],
+  "work": [
+  {"name": "Slack", "detail": "", "age": 18000, "terminal": false},
+  {"name": "Figma", "detail": "", "age": 15000, "terminal": false}]}}

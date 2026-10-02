@@ -79,6 +79,13 @@ Unauthenticated refusals (HTTP 4xx, treat as hints only): `unknown_phone`, `bad_
 
 `caps` lists what this agent can do: `seconds` (timers in seconds), `net` (iptables is present),
 `login` (the login screen is set up to ask the agent). An agent without `caps` is the first version.
+
+`os` is a name for people, shown by the app as it is: `Ubuntu 24.04.1 LTS` from the Ubuntu agent,
+`macOS 27.0` from the macOS agent. Clients that need to know the platform check whether it starts
+with `macOS`; anything else is treated as Linux.
+
+`protocol/vectors.json` holds fixed inputs with the expected key derivation and signatures. Every
+implementation (the Python agent, the macOS agent, the Android app) tests against it.
 `net` is `on` or `off`; `net_timer` is `{remaining, warn}` while a countdown runs. Admin accounts are
 always `on`.
 

@@ -3,7 +3,7 @@
 # The result is curfew_<version>_all.deb; the version comes from the file VERSION.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-OUT="$(mkdir -p "${1:-$HERE/../dist}" && cd "${1:-$HERE/../dist}" && pwd)"
+OUT="$(mkdir -p "${1:-$HERE/../../dist}" && cd "${1:-$HERE/../../dist}" && pwd)"
 VERSION="$(tr -d '[:space:]' < "$HERE/VERSION")"
 T="$(mktemp -d)"; trap 'rm -rf "$T"' EXIT
 P="$T/curfew"

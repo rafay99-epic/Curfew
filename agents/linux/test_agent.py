@@ -17,6 +17,7 @@ import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PORT = 18787
+REAL_USERS = sys.platform.startswith("linux")
 TMP = tempfile.mkdtemp(prefix="curfew-test-")
 ENV = dict(os.environ, CURFEW_DRY="1", CURFEW_PORT=str(PORT), CURFEW_STATE=TMP)
 BASE = "http://127.0.0.1:%d" % PORT
@@ -34,7 +35,8 @@ def check(name, cond):
 
 
 def start(fake=None):
-    env = dict(ENV, CURFEW_FAKE=HERE + "/../tools/demo/%s.json" % fake) if fake else ENV
+    fake = fake or (None if REAL_USERS else "kids")
+    env = dict(ENV, CURFEW_FAKE=HERE + "/../../tools/demo/%s.json" % fake) if fake else ENV
     p = subprocess.Popen([sys.executable, HERE + "/curfew.py", "serve"], env=env, stderr=LOG)
     for _ in range(50):
         try:
@@ -67,12 +69,27 @@ def cli(*args, **env):
     return subprocess.run([sys.executable, HERE + "/curfew.py", *args], env=dict(ENV, **env), capture_output=True, text=True)
 
 
+def other_address():
+    try:
+        with socket.socket() as s:
+            s.bind(("127.0.0.2", 0))
+        return "127.0.0.2", "127.0.0.1"
+    except OSError:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(("192.0.2.1", 9))
+            lan = s.getsockname()[0]
+        return lan, lan
+
+
+OTHER = other_address()
+
+
 def elsewhere():
     """A connection to the agent from another address than the tests use."""
     s = socket.socket()
-    s.bind(("127.0.0.2", 0))
+    s.bind((OTHER[0], 0))
     s.settimeout(5)
-    s.connect(("127.0.0.1", PORT))
+    s.connect((OTHER[1], PORT))
     return s
 
 
@@ -130,6 +147,18 @@ check("an app running as its own service is named (Ghostty)", ids("/u/app.slice/
 check("autostart service ignored", ids("/a/app-gnome-foo\\x2dautostart@autostart.service") == [])
 check("QR too long is rejected cleanly", not hasattr(curfew, "x") and len(curfew.qr_matrix("a" * 106)) == 37)
 
+def check_vectors():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("curfew", HERE + "/curfew.py")
+    c = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(c)
+    v = json.load(open(HERE + "/../../protocol/vectors.json"))
+    check("shared vectors: key derivation", all(c.derive_key(x["code"], x["snonce"], x["cnonce"], x["phone"]).hex() == x["key_hex"] for x in v["derive_key"]))
+    check("shared vectors: signatures", all(c.mac(bytes.fromhex(x["key_hex"]), *x["parts"]) == x["mac"] for x in v["mac"]))
+    check("shared vectors: code cleanup", all(c.clean_code(x["in"]) == x["out"] for x in v["clean_code"]))
+
+
+check_vectors()
 agent = start()
 try:
     st, hello = http("GET", "/v1/hello")
@@ -230,62 +259,65 @@ try:
     r = call(a, "logout", user=me)[1]
     check("logout answers", r == {"ok": True} or r["error"] == "not_logged_in")
 
-    # --- log in from the phone: the login screen asks 'curfew pam-login'
-    token = TMP + "/run/login/" + me
-    pam = lambda user=me, kind="auth": cli("pam-login", PAM_USER=user, PAM_TYPE=kind).returncode
-    check("no approval, no login", pam() == 1)
-    r = call(a, "login", user=me)[1]
-    check("login approved", r["ok"] and r["how"] in ("approved", "unlocked") and os.path.exists(token))
-    check("approval is private", oct(os.stat(token).st_mode & 0o777) == "0o600")
-    check("approval is for that account only", pam("root") == 1 and pam("nobody") == 1 and pam("../" + me) == 1)
-    check("approval is not used outside a login", pam(kind="account") == 1 and os.path.exists(token))
-    check("approved login is let in", pam() == 0)
-    check("approval works once", pam() == 1 and not os.path.exists(token))
-    call(a, "login", user=me)
-    open(token, "w").write(str(time.time() - 1))
-    check("expired approval is refused and removed", pam() == 1 and not os.path.exists(token))
-    call(a, "login", user=me)
-    call(a, "lock", user=me)
-    check("locking takes the approval back", not os.path.exists(token))
-    check("login for unknown account refused", call(a, "login", user="root")[1] == {"ok": False, "error": "bad_user"})
+    if REAL_USERS:
+        # --- log in from the phone: the login screen asks 'curfew pam-login'
+        token = TMP + "/run/login/" + me
+        pam = lambda user=me, kind="auth": cli("pam-login", PAM_USER=user, PAM_TYPE=kind).returncode
+        check("no approval, no login", pam() == 1)
+        r = call(a, "login", user=me)[1]
+        check("login approved", r["ok"] and r["how"] in ("approved", "unlocked") and os.path.exists(token))
+        check("approval is private", oct(os.stat(token).st_mode & 0o777) == "0o600")
+        check("approval is for that account only", pam("root") == 1 and pam("nobody") == 1 and pam("../" + me) == 1)
+        check("approval is not used outside a login", pam(kind="account") == 1 and os.path.exists(token))
+        check("approved login is let in", pam() == 0)
+        check("approval works once", pam() == 1 and not os.path.exists(token))
+        call(a, "login", user=me)
+        open(token, "w").write(str(time.time() - 1))
+        check("expired approval is refused and removed", pam() == 1 and not os.path.exists(token))
+        call(a, "login", user=me)
+        call(a, "lock", user=me)
+        check("locking takes the approval back", not os.path.exists(token))
+        check("login for unknown account refused", call(a, "login", user="root")[1] == {"ok": False, "error": "bad_user"})
 
-    # --- the typed login password is remembered, to unlock the keyring after a login from the phone
-    keep = lambda user, text, kind="auth": subprocess.run([sys.executable, HERE + "/curfew.py", "pam-remember"], input=text,
-                                                         env=dict(ENV, PAM_USER=user, PAM_TYPE=kind)).returncode
-    kept = lambda: json.load(open(TMP + "/passwords.json")) if os.path.exists(TMP + "/passwords.json") else {}
-    check("a password for an unknown account is not kept", keep("root", b"x\0") == 1 and kept() == {})
-    check("nothing is kept outside a login", keep(me, b"x\0", "account") == 1 and kept() == {})
-    check("a typed password is kept", keep(me, "pässword one\0".encode()) == 0 and kept() == {me: "pässword one"})
-    check("a newer one replaces it", keep(me, b"two") == 0 and kept() == {me: "two"})
-    check("kept passwords are private", oct(os.stat(TMP + "/passwords.json").st_mode & 0o777) == "0o600")
-    call(a, "login", user=me)
-    time.sleep(0.5)
-    LOG.flush()
-    check("a login from the phone unlocks the keyring", "would unlock the keyring of " + me in open(TMP + "/agent.log").read())
-    if shutil.which("gnome-keyring-daemon") and shutil.which("dbus-run-session") and shutil.which("gdbus"):
-        # a real keyring service in a throw-away home: locked at start, as after a login without a password
-        kr = tempfile.mkdtemp(prefix="k", dir="/tmp")       # short: socket paths have a length limit
-        script = """
-            q() { gdbus call --session --dest org.freedesktop.secrets --object-path /org/freedesktop/secrets/collection/login \\
-                  --method org.freedesktop.DBus.Properties.Get org.freedesktop.Secret.Collection Locked 2>/dev/null | tr -d '\\n'; }
-            gnome-keyring-daemon --foreground --components=secrets --control-directory=$XDG_RUNTIME_DIR/keyring >/dev/null 2>&1 & D=$!
-            sleep 1.5
-            printf 'first' | %(py)s %(here)s/curfew.py keyring $XDG_RUNTIME_DIR/keyring/control; echo "new:$? $(q)"
-            kill $D; wait $D 2>/dev/null
-            gnome-keyring-daemon --foreground --components=secrets --control-directory=$XDG_RUNTIME_DIR/keyring >/dev/null 2>&1 & D=$!
-            sleep 1.5; echo "start:$(q)"
-            printf 'wrong' | %(py)s %(here)s/curfew.py keyring $XDG_RUNTIME_DIR/keyring/control; echo "wrong:$? $(q)"
-            printf 'first' | %(py)s %(here)s/curfew.py keyring $XDG_RUNTIME_DIR/keyring/control; echo "right:$? $(q)"
-            kill $D; wait $D 2>/dev/null
-        """ % {"py": sys.executable, "here": HERE}
-        os.makedirs(kr + "/run", mode=0o700); os.makedirs(kr + "/home")
-        out = subprocess.run(["dbus-run-session", "--", "sh", "-c", script], capture_output=True, text=True, timeout=60,
-                             env={"PATH": os.environ["PATH"], "HOME": kr + "/home", "XDG_RUNTIME_DIR": kr + "/run"}).stdout
-        shutil.rmtree(kr, ignore_errors=True)
-        check("keyring of a new account is created unlocked", "new:0 (<false>,)" in out)
-        check("keyring is locked after a login without the password", "start:(<true>,)" in out)
-        check("a wrong remembered password leaves it locked", "wrong:1 (<true>,)" in out)
-        check("the remembered password unlocks it", "right:0 (<false>,)" in out)
+        # --- the typed login password is remembered, to unlock the keyring after a login from the phone
+        keep = lambda user, text, kind="auth": subprocess.run([sys.executable, HERE + "/curfew.py", "pam-remember"], input=text,
+                                                             env=dict(ENV, PAM_USER=user, PAM_TYPE=kind)).returncode
+        kept = lambda: json.load(open(TMP + "/passwords.json")) if os.path.exists(TMP + "/passwords.json") else {}
+        check("a password for an unknown account is not kept", keep("root", b"x\0") == 1 and kept() == {})
+        check("nothing is kept outside a login", keep(me, b"x\0", "account") == 1 and kept() == {})
+        check("a typed password is kept", keep(me, "pässword one\0".encode()) == 0 and kept() == {me: "pässword one"})
+        check("a newer one replaces it", keep(me, b"two") == 0 and kept() == {me: "two"})
+        check("kept passwords are private", oct(os.stat(TMP + "/passwords.json").st_mode & 0o777) == "0o600")
+        call(a, "login", user=me)
+        time.sleep(0.5)
+        LOG.flush()
+        check("a login from the phone unlocks the keyring", "would unlock the keyring of " + me in open(TMP + "/agent.log").read())
+        if shutil.which("gnome-keyring-daemon") and shutil.which("dbus-run-session") and shutil.which("gdbus"):
+            # a real keyring service in a throw-away home: locked at start, as after a login without a password
+            kr = tempfile.mkdtemp(prefix="k", dir="/tmp")       # short: socket paths have a length limit
+            script = """
+                q() { gdbus call --session --dest org.freedesktop.secrets --object-path /org/freedesktop/secrets/collection/login \\
+                      --method org.freedesktop.DBus.Properties.Get org.freedesktop.Secret.Collection Locked 2>/dev/null | tr -d '\\n'; }
+                gnome-keyring-daemon --foreground --components=secrets --control-directory=$XDG_RUNTIME_DIR/keyring >/dev/null 2>&1 & D=$!
+                sleep 1.5
+                printf 'first' | %(py)s %(here)s/curfew.py keyring $XDG_RUNTIME_DIR/keyring/control; echo "new:$? $(q)"
+                kill $D; wait $D 2>/dev/null
+                gnome-keyring-daemon --foreground --components=secrets --control-directory=$XDG_RUNTIME_DIR/keyring >/dev/null 2>&1 & D=$!
+                sleep 1.5; echo "start:$(q)"
+                printf 'wrong' | %(py)s %(here)s/curfew.py keyring $XDG_RUNTIME_DIR/keyring/control; echo "wrong:$? $(q)"
+                printf 'first' | %(py)s %(here)s/curfew.py keyring $XDG_RUNTIME_DIR/keyring/control; echo "right:$? $(q)"
+                kill $D; wait $D 2>/dev/null
+            """ % {"py": sys.executable, "here": HERE}
+            os.makedirs(kr + "/run", mode=0o700); os.makedirs(kr + "/home")
+            out = subprocess.run(["dbus-run-session", "--", "sh", "-c", script], capture_output=True, text=True, timeout=60,
+                                 env={"PATH": os.environ["PATH"], "HOME": kr + "/home", "XDG_RUNTIME_DIR": kr + "/run"}).stdout
+            shutil.rmtree(kr, ignore_errors=True)
+            check("keyring of a new account is created unlocked", "new:0 (<false>,)" in out)
+            check("keyring is locked after a login without the password", "start:(<true>,)" in out)
+            check("a wrong remembered password leaves it locked", "wrong:1 (<true>,)" in out)
+            check("the remembered password unlocks it", "right:0 (<false>,)" in out)
+    else:
+        print("skip  login from the phone and remembered passwords need real Linux accounts")
 
     # --- internet per account (made-up accounts: dad is admin, gaming and classes are not)
     agent.terminate(); agent.wait()
