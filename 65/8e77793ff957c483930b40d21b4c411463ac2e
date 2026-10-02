@@ -1,0 +1,180 @@
+android/app/src/main/java/com/rafay99/curfew/core/Protocol.kt
+  s_c63d89cb37b8bb::t_79ae5fb187c230 1-64
+android/app/src/main/res/drawable/ic_launcher_background.xml
+  s_c63d89cb37b8bb::t_9db36379d3a5ab 1,3
+android/build.sh
+  s_c63d89cb37b8bb::t_bc3f6edd96e645 4-14,17-26,28-33
+android/app/src/main/java/com/rafay99/curfew/security/AppLock.kt
+  s_c63d89cb37b8bb::t_cfd634367a824f 1-38
+android/build.gradle.kts
+  s_c63d89cb37b8bb::t_bc3f6edd96e645 2
+android/app/src/main/java/com/rafay99/curfew/ui/screens/home/ComputerRow.kt
+  s_c63d89cb37b8bb::t_4f754ae7b17c19 5,32,49
+  s_c63d89cb37b8bb::t_883cbd944f291b 1-4,6-31,33-48,50-54
+android/app/src/main/java/com/rafay99/curfew/ui/components/Effects.kt
+  s_c63d89cb37b8bb::t_8230eaf7f56b39 1-43
+android/app/src/main/java/com/rafay99/curfew/security/ConfirmOwner.kt
+  s_c63d89cb37b8bb::t_cfd634367a824f 1-33
+android/app/src/main/java/com/rafay99/curfew/ui/theme/Type.kt
+  s_c63d89cb37b8bb::t_cfd634367a824f 1-3,5,9,11,13,18,37-38,54-55
+  s_c63d89cb37b8bb::t_4ff1cb2aae3359 4,14
+  s_c63d89cb37b8bb::t_c62d7ac1f30ff9 6-8,10,12,15-17,19-36,39-53
+android/app/src/main/java/com/rafay99/curfew/data/Live.kt
+  s_c63d89cb37b8bb::t_73f59ed2b69e27 1-9
+android/app/src/main/java/com/rafay99/curfew/core/Format.kt
+  s_c63d89cb37b8bb::t_2bea1fec5cd64b 16-23,26-35,39,41
+  s_c63d89cb37b8bb::t_79ae5fb187c230 1-15,24-25,36-38,40,42-43
+android/app/src/main/res/values-v31/themes.xml
+  s_c63d89cb37b8bb::t_9db36379d3a5ab 1-11
+android/app/src/main/res/drawable/ic_launcher_monochrome.xml
+  s_c63d89cb37b8bb::t_9db36379d3a5ab 3-4
+android/app/src/main/java/com/rafay99/curfew/ui/screens/account/AccountScreen.kt
+  s_c63d89cb37b8bb::t_846c9e55a66acd 3,5,10,21,26,28,36,38-39,43-48,51,55,59-61,71,91,112-118,134,139-143,145-149,152-158,162-164,169-178,181,186,190,195
+  s_c63d89cb37b8bb::t_e797a91f8fb40a 1-2,4,6-9,11-20,22-25,27,29-35,37,40-42,49-50,52-54,56-58,62-70,72-90,92-111,119-133,135-138,144,150-151,159-161,165-168,179-180,182-185,187-189,191-194,196-200
+android/app/src/main/java/com/rafay99/curfew/core/StoreData.kt
+  s_c63d89cb37b8bb::t_66a1cd1f435b8b 12,22,54
+  s_c63d89cb37b8bb::t_79ae5fb187c230 1-11,13-21,23-53,55-65
+android/app/src/main/java/com/rafay99/curfew/data/Discovery.kt
+  s_c63d89cb37b8bb::t_73f59ed2b69e27 1-77
+android/app/src/main/java/com/rafay99/curfew/core/Lede.kt
+  s_c63d89cb37b8bb::t_325a6c5c87309e 1-84
+android/app/build.gradle.kts
+  s_c63d89cb37b8bb::t_bc3f6edd96e645 1-2,9-14,16-17,20,22,28-33,53-59
+  s_c63d89cb37b8bb::t_e4923b16c69630 23-24,49-52
+android/app/src/main/java/com/rafay99/curfew/security/LockScreen.kt
+  s_c63d89cb37b8bb::t_259448eee11c7b 8,17-23,28-33
+  s_c63d89cb37b8bb::t_cfd634367a824f 1-7,9-16,24-27,34-35
+android/app/src/main/java/com/rafay99/curfew/core/Status.kt
+  s_c63d89cb37b8bb::t_79ae5fb187c230 1-5,8-69
+  s_c63d89cb37b8bb::t_2bea1fec5cd64b 6-7
+android/app/src/main/java/com/rafay99/curfew/ui/components/Rows.kt
+  s_c63d89cb37b8bb::t_e5fbd97c22926b 1-62
+android/app/src/main/java/com/rafay99/curfew/core/Client.kt
+  s_c63d89cb37b8bb::t_79ae5fb187c230 1-104
+android/app/src/main/java/com/rafay99/curfew/data/Network.kt
+  s_c63d89cb37b8bb::t_73f59ed2b69e27 1-17
+android/app/src/main/assets/licenses/OFL-GeistMono.txt
+  s_c63d89cb37b8bb::t_eb94112d02abcc 1-93
+android/app/src/main/java/com/rafay99/curfew/ui/components/Buttons.kt
+  s_c63d89cb37b8bb::t_4f1fc75ef28512 43,70
+  s_c63d89cb37b8bb::t_00fb9864de2ee4 4,83
+  s_c63d89cb37b8bb::t_8230eaf7f56b39 1-2,7,10,12,14,16-17,19-20,22,26,31-33,37,40,46,53,72-74,94-97,99
+  s_c63d89cb37b8bb::t_aa2bd7a7276a20 3,5-6,8-9,11,13,15,18,21,23-25,27-30,34-36,38-39,41-42,44-45,47-52,54-69,71,75-82,84-93,98
+android/app/src/test/java/com/rafay99/curfew/core/CurfewTest.kt
+  s_c63d89cb37b8bb::t_db2674900cd471 214-217,244-246,252-254,256,288-325
+  s_c63d89cb37b8bb::t_3b8b79531bf691 1-213,218-243,247-251,255,257-287,326-327
+android/app/src/main/java/com/rafay99/curfew/ui/components/Countdown.kt
+  s_c63d89cb37b8bb::t_681157b23f2f63 21
+  s_c63d89cb37b8bb::t_840ade6be2fb06 1-20,22-33
+android/app/src/main/java/com/rafay99/curfew/ui/theme/Theme.kt
+  s_c63d89cb37b8bb::t_cfd634367a824f 1-9,12-15,17
+  s_c63d89cb37b8bb::t_4bede4b64e54b9 10-11,16
+android/app/src/main/assets/licenses/OFL-InstrumentSerif.txt
+  s_c63d89cb37b8bb::t_eb94112d02abcc 1-93
+android/app/src/main/res/values/themes.xml
+  s_c63d89cb37b8bb::t_9db36379d3a5ab 2-4,6-8
+android/app/src/main/assets/licenses/OFL-Geist.txt
+  s_c63d89cb37b8bb::t_eb94112d02abcc 1-93
+android/app/src/main/java/com/rafay99/curfew/data/GoodbyeWorker.kt
+  s_c63d89cb37b8bb::t_73f59ed2b69e27 1-35
+android/app/src/main/java/com/rafay99/curfew/core/Computer.kt
+  s_c63d89cb37b8bb::t_24e0be3ebf6769 6,13-16
+  s_c63d89cb37b8bb::t_79ae5fb187c230 1-5,7-12,17-20
+android/app/src/main/java/com/rafay99/curfew/ui/components/Sheets.kt
+  s_c63d89cb37b8bb::t_8230eaf7f56b39 1-10,12,14-15,18-21,23-29,36-38,40,42-43,58,65-70,83,92,105-106
+  s_c63d89cb37b8bb::t_a04c16b32dfd4b 11,13,16-17,22,30-35,39,41,44-57,59-64,71-82,84-91,93-104
+android/app/src/main/java/com/rafay99/curfew/ui/screens/about/AboutScreen.kt
+  s_c63d89cb37b8bb::t_8300b691608a30 1-98,100-101
+  s_c63d89cb37b8bb::t_9930e5676b6d30 99
+android/app/src/main/java/com/rafay99/curfew/ui/components/Page.kt
+  s_c63d89cb37b8bb::t_1aba1743a4f0a7 13,20-22,27,31-35,37-39,43,50-51
+  s_c63d89cb37b8bb::t_8230eaf7f56b39 1-12,14-19,23-26,28-30,36,40-42,44-49,52
+android/app/src/main/java/com/rafay99/curfew/ui/components/RulerPicker.kt
+  s_c63d89cb37b8bb::t_90db66fc404cd8 1-29,31-68
+  s_c63d89cb37b8bb::t_4f1fc75ef28512 30
+android/app/src/main/java/com/rafay99/curfew/ui/components/Snackbar.kt
+  s_c63d89cb37b8bb::t_8230eaf7f56b39 1-11
+android/app/src/main/java/com/rafay99/curfew/CurfewApp.kt
+  s_c63d89cb37b8bb::t_73f59ed2b69e27 1-8
+android/app/src/main/java/com/rafay99/curfew/ui/components/Heading.kt
+  s_c63d89cb37b8bb::t_b58cf187bc695c 1-56
+android/app/src/main/java/com/rafay99/curfew/MainActivity.kt
+  s_c63d89cb37b8bb::t_65a9183270ec75 3,5,23
+  s_c63d89cb37b8bb::t_e797a91f8fb40a 1-2,4,6-22,24-54
+android/app/src/main/java/com/rafay99/curfew/core/Link.kt
+  s_c63d89cb37b8bb::t_2bea1fec5cd64b 7,10-11,13
+  s_c63d89cb37b8bb::t_79ae5fb187c230 1-6,8-9,12,14-35
+android/app/src/main/java/com/rafay99/curfew/ui/screens/computer/ComputerScreen.kt
+  s_c63d89cb37b8bb::t_c89ee52bdb9047 125,129-130
+  s_c63d89cb37b8bb::t_56a04c2d718a19 8-124,131,137,141,145-150,152
+  s_c63d89cb37b8bb::t_e6dacb43564e13 1-7,126-128,132-136,138-140,142-144,151,153-155
+android/app/src/main/java/com/rafay99/curfew/data/HttpTransport.kt
+  s_c63d89cb37b8bb::t_73f59ed2b69e27 1-29
+android/app/src/main/java/com/rafay99/curfew/core/Links.kt
+  s_c63d89cb37b8bb::t_00edfb59302af2 1-9
+android/app/src/main/java/com/rafay99/curfew/ui/screens/account/OpenApps.kt
+  s_c63d89cb37b8bb::t_a5db89f150e1aa 9,12,14,16,18-21,23-34,36,40-49
+  s_c63d89cb37b8bb::t_e797a91f8fb40a 1-8,10-11,13,15,17,22,35,37-38,50-51
+  s_c63d89cb37b8bb::t_b125e7c399d619 39
+android/app/src/main/java/com/rafay99/curfew/ui/components/Links.kt
+  s_c63d89cb37b8bb::t_7c8c3ed2570e96 1-13
+android/app/src/main/java/com/rafay99/curfew/ui/theme/Color.kt
+  s_c63d89cb37b8bb::t_cfd634367a824f 1-5
+  s_c63d89cb37b8bb::t_42660fe37dd026 6-27
+.gitignore
+  s_c63d89cb37b8bb::t_539be30d8f89f3 15
+android/app/src/main/java/com/rafay99/curfew/ui/components/Field.kt
+  s_c63d89cb37b8bb::t_92985177bc67ab 1-3,5-11,13-31,33-35
+  s_c63d89cb37b8bb::t_7c8c3ed2570e96 4,12,32
+android/app/src/main/java/com/rafay99/curfew/ui/CurfewNav.kt
+  s_c63d89cb37b8bb::t_e797a91f8fb40a 1-18,20-43,48-61
+  s_c63d89cb37b8bb::t_65a9183270ec75 19,44-47
+android/app/src/main/java/com/rafay99/curfew/ui/theme/Space.kt
+  s_c63d89cb37b8bb::t_1fc7f3baacc0d5 1-9
+android/app/src/main/java/com/rafay99/curfew/ui/screens/add/AddScreen.kt
+  s_c63d89cb37b8bb::t_e797a91f8fb40a 1-25,27-29,31,38-56,58-59,63-77,79-83,85-88,93,96,102,107-109
+  s_c63d89cb37b8bb::t_7862b63ccb69d2 26,30,32-37,57,60-62,78,84,89-92,94-95,97-101,103-106
+android/app/src/main/java/com/rafay99/curfew/ui/screens/home/HomeScreen.kt
+  s_c63d89cb37b8bb::t_e31099dbb31e2f 8-69
+  s_c63d89cb37b8bb::t_7aebfc3b9bb361 5-7
+  s_c63d89cb37b8bb::t_ecc26e11f08d19 70-71
+  s_89777c01e2a77e::t_d09c183a5e1553 1-4
+android/app/src/main/java/com/rafay99/curfew/ui/screens/add/ManualPair.kt
+  s_c63d89cb37b8bb::t_2bb55644ee8926 1-8,10-40,42-49
+  s_c63d89cb37b8bb::t_244c7328321dbb 9,41
+android/app/src/main/java/com/rafay99/curfew/core/Timer.kt
+  s_c63d89cb37b8bb::t_a68e3b00fb32f4 5,8,10-11
+  s_c63d89cb37b8bb::t_79ae5fb187c230 1-4,6-7,9,12-15
+android/app/src/main/java/com/rafay99/curfew/data/SecureFile.kt
+  s_c63d89cb37b8bb::t_73f59ed2b69e27 1-43,45-47
+  s_c63d89cb37b8bb::t_cfd634367a824f 44
+android/app/src/main/java/com/rafay99/curfew/data/Repo.kt
+  s_c63d89cb37b8bb::t_73f59ed2b69e27 1-128,131-225
+  s_c63d89cb37b8bb::t_4fc8c1eef736a2 129-130
+android/app/src/test/java/com/rafay99/curfew/core/ProtocolVectorsTest.kt
+  s_c63d89cb37b8bb::t_6497da8b6343a0 1-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "658e77793ff957c483930b40d21b4c411463ac2e",
+  "prompts": {},
+  "sessions": {
+    "s_89777c01e2a77e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-aab092e025ec612ae",
+        "model": "unknown"
+      },
+      "human_author": "Abdul Rafay <99marafay@gmail.com>"
+    },
+    "s_c63d89cb37b8bb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d37dcc8e-e1c8-4ced-a6ae-8bfdc3f3ca77",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Abdul Rafay <99marafay@gmail.com>"
+    }
+  }
+}
