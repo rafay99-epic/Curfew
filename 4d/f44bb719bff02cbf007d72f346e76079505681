@@ -1,0 +1,281 @@
+agents/macos/Sources/CurfewApp/Components/HairlineRow.swift
+  s_c63d89cb37b8bb::t_7f81465ce63b7a 1-25
+agents/macos/Sources/CurfewControl/QRMatrix.swift
+  s_c63d89cb37b8bb::t_8038782370f4c9 1-26
+agents/macos/Tests/CurfewProtocolTests/EnvelopeTests.swift
+  s_c63d89cb37b8bb::t_8d1f4bb3c454b2 1-52
+agents/macos/Sources/CurfewProtocol/JSON/JSONValue.swift
+  s_c63d89cb37b8bb::t_232543d1c0dd9b 1-49,51-59
+  s_c63d89cb37b8bb::t_c149f95ac421ee 50
+agents/macos/Sources/CurfewSystem/Live/LivePower.swift
+  s_c63d89cb37b8bb::t_e8c420c71b52be 1-25
+agents/macos/Sources/CurfewApp/Views/FirstRunView.swift
+  s_c63d89cb37b8bb::t_27536ad72b4abc 1-50
+agents/macos/Sources/CurfewSystem/DryRun/DryRunNotifier.swift
+  s_c63d89cb37b8bb::t_ee22f886e0a641 1-11
+agents/macos/Tests/CurfewProtocolTests/VectorTests.swift
+  s_c63d89cb37b8bb::t_7599d063595d7d 1-70
+agents/macos/Sources/CurfewSystem/Mac/ProcessTable.swift
+  s_c63d89cb37b8bb::t_c92ff56138aa0b 1-92
+agents/macos/Sources/CurfewAgent/Network/LocalNetwork.swift
+  s_c63d89cb37b8bb::t_6fe6f1de910388 1-46
+agents/macos/Sources/CurfewSystem/Mac/MacAppMonitor.swift
+  s_c63d89cb37b8bb::t_696bf2380ce9e0 1-15
+agents/macos/Sources/CurfewAgent/Server/ConnectionLimiter.swift
+  s_c63d89cb37b8bb::t_9875240c53e56c 1-27
+agents/macos/Sources/CurfewSystem/DryRun/DryRunPower.swift
+  s_c63d89cb37b8bb::t_ba6a7e0e137661 1-27
+agents/macos/Sources/CurfewApp/Views/MainView.swift
+  s_c63d89cb37b8bb::t_d307485b31dd51 1-87
+agents/macos/Sources/CurfewApp/Model/PrivilegedRunner.swift
+  s_c63d89cb37b8bb::t_b6c09c73866c7f 39-42
+  s_c63d89cb37b8bb::t_36efe722bbdbe7 1-38,43-56
+agents/macos/Sources/CurfewApp/Model/CurfewModel.swift
+  s_c63d89cb37b8bb::t_1060f6ea066889 176
+  s_c63d89cb37b8bb::t_322cf95033afdb 178-183
+  s_c63d89cb37b8bb::t_d7465f128ac9f8 1-175,177,184-211
+agents/macos/Tests/CurfewControlTests/ControlServerTests.swift
+  s_c63d89cb37b8bb::t_f6a92f8a1168ce 1-99,101-137
+  s_c63d89cb37b8bb::t_926e512c702f00 100
+agents/macos/Sources/CurfewApp/App/Snapshots.swift
+  s_c63d89cb37b8bb::t_8b01d15ee80bd4 33,37,45-46
+  s_c63d89cb37b8bb::t_c9cb800fe35803 1-32,34-36,38-44,47-53
+agents/macos/Tests/CurfewControlTests/ControlWireTests.swift
+  s_c63d89cb37b8bb::t_032deb600a7feb 1-50
+agents/macos/Sources/CurfewControl/ControlSocket.swift
+  s_c63d89cb37b8bb::t_0707207bbadb82 62,66
+  s_c63d89cb37b8bb::t_3cad6f0fc55bf3 1-61,63-65,67-85
+agents/macos/Sources/CurfewApp/Components/SlabButton.swift
+  s_c63d89cb37b8bb::t_42d83b5bbc749b 1-30,32-80
+  s_c63d89cb37b8bb::t_4d8a765d739fc0 31
+agents/macos/Sources/CurfewApp/App/AppResources.swift
+  s_c63d89cb37b8bb::t_e9240a14fdf936 1-27
+agents/macos/Sources/CurfewProtocol/JSON/StrictDecoding.swift
+  s_c63d89cb37b8bb::t_8a06bf2a5de492 1-15
+agents/macos/Tests/CurfewAppTests/EndToEndTests.swift
+  s_c63d89cb37b8bb::t_1ce0cf43dd53ba 32-33
+  s_c63d89cb37b8bb::t_fa02b6e1be1d2b 1-31,34-162
+agents/macos/Sources/CurfewSystem/Fake/FakeSystem.swift
+  s_c63d89cb37b8bb::t_7445949a80b84d 1-42
+agents/macos/VERSION
+  s_c63d89cb37b8bb::t_0220f01a5c6f1d 1
+agents/macos/Sources/CurfewAgent/Pairing/PhoneName.swift
+  s_c63d89cb37b8bb::t_084e715a1cb75c 1-55
+agents/macos/Sources/CurfewSystem/Mac/MacSessionMonitor.swift
+  s_c63d89cb37b8bb::t_3c00b44dd1af2f 1-36
+agents/macos/Sources/CurfewAgent/Agent/Agent.swift
+  s_c63d89cb37b8bb::t_1de7cb9d639b6c 1-23,28-62
+  s_c63d89cb37b8bb::t_3bd5d438edc17a 24-27
+agents/macos/Tests/CurfewAppTests/AdminScriptTests.swift
+  s_c63d89cb37b8bb::t_4f1312106ff8e8 1-26
+agents/macos/Tests/CurfewSystemTests/MacRulesTests.swift
+  s_c63d89cb37b8bb::t_ddc9e25671abab 1-111
+agents/macos/Tests/CurfewProtocolTests/JSONTests.swift
+  s_c63d89cb37b8bb::t_89f060e5dcd44e 1-5,7-45
+  s_c63d89cb37b8bb::t_c149f95ac421ee 6
+agents/macos/Packaging/build-app.sh
+  s_c63d89cb37b8bb::t_c95f79b4e1f6ab 73-74
+  s_c63d89cb37b8bb::t_d4ed660c73c378 1-72,75-76
+agents/macos/Sources/CurfewApp/Components/Page.swift
+  s_c63d89cb37b8bb::t_35df254193327c 1-19
+agents/macos/Sources/CurfewProtocol/Crypto/Hex.swift
+  s_c63d89cb37b8bb::t_6b7edaf293491b 1-36
+agents/macos/Sources/CurfewSystem/Mac/MacHost.swift
+  s_c63d89cb37b8bb::t_cb983140df250d 1-24
+agents/macos/Sources/CurfewSystem/Mac/AppBundle.swift
+  s_c63d89cb37b8bb::t_4b1fe3a5202017 1-39
+agents/macos/Sources/curfew/Commands/Phones.swift
+  s_c63d89cb37b8bb::t_f9ee277f7c2e1f 1-6,8-11,15-21,24,27-40
+  s_c63d89cb37b8bb::t_dfa4381b06018d 7,12-14,22-23,25-26
+agents/macos/Sources/CurfewApp/App/IconArt.swift
+  s_c63d89cb37b8bb::t_6b796abb4dffee 1-24
+agents/macos/Sources/CurfewApp/Components/QRCodeView.swift
+  s_c63d89cb37b8bb::t_3fec8f233ae1a2 1-29
+agents/macos/.gitignore
+  s_c63d89cb37b8bb::t_d2aec225a2e735 1-2
+agents/macos/Tests/CurfewAgentTests/PairingTests.swift
+  s_c63d89cb37b8bb::t_2c27bfe95ad514 1-93
+agents/macos/Sources/CurfewProtocol/Crypto/Token.swift
+  s_c63d89cb37b8bb::t_14854563169cea 1-26
+agents/macos/Sources/CurfewSystem/Model/Models.swift
+  s_c63d89cb37b8bb::t_da247e8049262d 1-54
+agents/macos/Resources/Licenses/OFL-Geist.txt
+  s_c63d89cb37b8bb::t_0220f01a5c6f1d 1-93
+agents/macos/Sources/CurfewApp/App/CurfewApp.swift
+  s_c63d89cb37b8bb::t_ea84520fca313b 1-56
+agents/macos/Sources/CurfewProtocol/Wire/Envelope.swift
+  s_c63d89cb37b8bb::t_c2aaf09fe4e414 1-67
+agents/macos/Sources/CurfewAgent/Store/AgentState.swift
+  s_c63d89cb37b8bb::t_e386badc315b54 74-78
+  s_c63d89cb37b8bb::t_c57882fa4edf54 1-5,12-17,24-73,79-122
+  s_c63d89cb37b8bb::t_0934b06455763c 6-11,18-23
+agents/macos/Resources/Licenses/OFL-GeistMono.txt
+  s_c63d89cb37b8bb::t_0220f01a5c6f1d 1-93
+agents/macos/Sources/CurfewProtocol/Wire/Limits.swift
+  s_c63d89cb37b8bb::t_3896f9dc1243dc 1-14
+agents/macos/Sources/CurfewApp/Components/Theme.swift
+  s_c63d89cb37b8bb::t_e62f6f388270c9 1-38
+agents/macos/Sources/CurfewProtocol/JSON/JSONWriter.swift
+  s_c63d89cb37b8bb::t_6c0a7c194b096d 1-71
+agents/macos/Sources/curfew/Settings.swift
+  s_c63d89cb37b8bb::t_ff5d834d9012b6 1,3-10,12,14-18,20-23,25-27,30-36,39-47
+  s_c63d89cb37b8bb::t_81fc7082cde751 2,11,13,19,24,28-29,37-38
+agents/macos/Sources/CurfewAgent/Ops/Operations.swift
+  s_c63d89cb37b8bb::t_c149f95ac421ee 123,135-138
+  s_c63d89cb37b8bb::t_5435e37c5ffafa 128
+  s_c63d89cb37b8bb::t_36e3e677843ec4 1-122,124-127,129-134,139-143
+agents/macos/Package.swift
+  s_c63d89cb37b8bb::t_05292c57de8f59 1-8,10-13,19-21,25-26
+  s_c63d89cb37b8bb::t_9c4bee6e0e7c5e 9,14-18,22-24
+agents/macos/Sources/CurfewProtocol/Crypto/Signature.swift
+  s_c63d89cb37b8bb::t_ce896c17d82b80 1-31
+agents/macos/Sources/curfew/Setup/Setup.swift
+  s_c63d89cb37b8bb::t_c330166049a8d0 12,16-21
+  s_c63d89cb37b8bb::t_9c26d71c2ef0e0 1-11,13-15,22-38
+agents/macos/Sources/CurfewAgent/Control/PeerPolicy.swift
+  s_c63d89cb37b8bb::t_7b10515efed545 1-22
+agents/macos/Sources/CurfewSystem/Model/Capabilities.swift
+  s_c63d89cb37b8bb::t_7173f2ddf5074a 1-82
+agents/macos/Sources/CurfewApp/App/Launch.swift
+  s_c63d89cb37b8bb::t_8b01d15ee80bd4 18-26
+  s_c63d89cb37b8bb::t_3f56b9000c8761 1-17,27-30
+agents/macos/Sources/CurfewApp/Components/GhostButton.swift
+  s_c63d89cb37b8bb::t_4d8a765d739fc0 1-25
+agents/macos/Sources/CurfewApp/Views/PhonesView.swift
+  s_c63d89cb37b8bb::t_be7ec970e71e4e 1-33
+agents/macos/Sources/curfew/Commands/Status.swift
+  s_c63d89cb37b8bb::t_585d11e811e668 1-2,4-14,16-18,25-28
+  s_c63d89cb37b8bb::t_343324d1847466 3,15,19-24
+agents/macos/Sources/CurfewControl/Layout.swift
+  s_c63d89cb37b8bb::t_c14d1da0e1fd65 1-23
+agents/macos/Sources/CurfewProtocol/Wire/Op.swift
+  s_c63d89cb37b8bb::t_bed4e189791625 1-28
+agents/macos/Resources/Licenses/OFL-InstrumentSerif.txt
+  s_c63d89cb37b8bb::t_0220f01a5c6f1d 1-93
+agents/macos/Sources/CurfewAgent/Control/ControlService.swift
+  s_c63d89cb37b8bb::t_482c854ca9fd94 1-47,49-88
+  s_c63d89cb37b8bb::t_9016162c34e4d9 48
+agents/macos/Sources/CurfewAgent/Server/HTTPMessage.swift
+  s_c63d89cb37b8bb::t_515bd606afcb0a 2,92
+  s_c63d89cb37b8bb::t_6ae218064a4ced 1,3-91,93-99
+agents/macos/Sources/CurfewAgent/Store/AgentState+Pairing.swift
+  s_c63d89cb37b8bb::t_6f57e1f7dfb439 1-41
+agents/macos/Sources/CurfewControl/ControlWire.swift
+  s_c63d89cb37b8bb::t_61951808eefa23 1-172
+agents/macos/Tests/CurfewAgentTests/EndToEndTests.swift
+  s_c63d89cb37b8bb::t_c149f95ac421ee 91
+  s_c63d89cb37b8bb::t_0a9978b1c3b4cd 1-90,92-171
+agents/macos/Sources/curfew/Commands/Serve.swift
+  s_c63d89cb37b8bb::t_83589b2aa959ce 1-51,53-54,56-58,77-100
+  s_c63d89cb37b8bb::t_da0c36c4e06e66 52,55,59-76
+agents/macos/Tests/CurfewAgentTests/TimerTests.swift
+  s_c63d89cb37b8bb::t_ab66cfbf257a76 1-63
+agents/macos/Tests/CurfewControlTests/PairingProgressTests.swift
+  s_c63d89cb37b8bb::t_85d6e78c5d2039 1-69
+agents/macos/Sources/CurfewApp/App/RootView.swift
+  s_c63d89cb37b8bb::t_4fdc82fa994980 1-30
+agents/macos/Sources/CurfewSystem/Mac/CommandName.swift
+  s_c63d89cb37b8bb::t_41c49e59378f62 1-64
+agents/macos/Sources/curfew/Terminal/QRTerminal.swift
+  s_c63d89cb37b8bb::t_f0bbd9c5427f83 2-6,8-26
+  s_c63d89cb37b8bb::t_12b5bf1f8e4033 1,7
+agents/macos/Sources/CurfewAgent/Server/HTTPExchange.swift
+  s_c63d89cb37b8bb::t_fe808e01299438 1-28,30,32-84
+  s_c63d89cb37b8bb::t_d2853583c6f8dc 29,31
+agents/macos/Sources/curfew/Setup/Installer.swift
+  s_c63d89cb37b8bb::t_634c16e0a43cd4 1-179
+agents/macos/Sources/CurfewAgent/Agent/Agent+Call.swift
+  s_c63d89cb37b8bb::t_d72ea14f955ac2 1-29
+agents/macos/Sources/CurfewAgent/Timer/TimerScheduler.swift
+  s_c63d89cb37b8bb::t_585c6584bc4793 1-77
+agents/macos/Sources/CurfewAgent/Server/HTTPServer.swift
+  s_c63d89cb37b8bb::t_48357e7fb3e4eb 54,63
+  s_c63d89cb37b8bb::t_225aa9a4e7cbc1 1-53,55-62,64-104
+agents/macos/Tests/CurfewAppTests/ViewTests.swift
+  s_c63d89cb37b8bb::t_67722c642dd427 1-32,34-42
+  s_c63d89cb37b8bb::t_8b01d15ee80bd4 33
+agents/macos/Sources/CurfewApp/Views/PairingView.swift
+  s_c63d89cb37b8bb::t_aad6e64c37e5e4 1-42
+agents/macos/Sources/CurfewApp/Components/SerifTitle.swift
+  s_c63d89cb37b8bb::t_d0391c3d38636b 1-20
+agents/macos/Tests/CurfewCLITests/InstallerTests.swift
+  s_c63d89cb37b8bb::t_763f4de9a13527 113
+  s_c63d89cb37b8bb::t_3a0d356718678c 1-112,114-115,121-125
+  s_c63d89cb37b8bb::t_c330166049a8d0 116-120
+agents/macos/Sources/CurfewProtocol/Wire/NonceStore.swift
+  s_c63d89cb37b8bb::t_07ef17d3632620 1-34
+agents/macos/Sources/CurfewApp/Model/ControlClient.swift
+  s_c63d89cb37b8bb::t_24230cfb4a8012 1-50
+agents/macos/Plugins/VersionPlugin/VersionPlugin.swift
+  s_c63d89cb37b8bb::t_f0aedfa77530ed 1-8,10-20
+  s_c63d89cb37b8bb::t_c5426c938afb06 9
+agents/macos/Sources/CurfewAgent/Agent/NonceBook.swift
+  s_c63d89cb37b8bb::t_ae70543d4a8e14 1-20
+agents/macos/Tests/CurfewAgentTests/OpDispatchTests.swift
+  s_c63d89cb37b8bb::t_4ea8aa8a371d76 47-48,61-63
+  s_c63d89cb37b8bb::t_94fcf2f2b5e2d7 1-46,49-57,59-60,64-81,83-143
+  s_c63d89cb37b8bb::t_c149f95ac421ee 58,82
+agents/macos/Tests/CurfewProtocolTests/NonceStoreTests.swift
+  s_c63d89cb37b8bb::t_96b9988cc115c8 5-9,13-15,22-23,40-44,53-54
+  s_c63d89cb37b8bb::t_dc63f48826f8df 1-4,10-12,16-21,24-39,45-52,55-56
+agents/macos/Sources/CurfewProtocol/JSON/JSONParser.swift
+  s_c63d89cb37b8bb::t_c149f95ac421ee 27-28
+  s_c63d89cb37b8bb::t_6a2e4db8ebe5c3 9,131
+  s_c63d89cb37b8bb::t_ea72db96e50621 1-8,10-26,29-130,132-202
+agents/macos/Tests/CurfewCLITests/QRTerminalTests.swift
+  s_c63d89cb37b8bb::t_20e5a1256d5900 37-47
+  s_c63d89cb37b8bb::t_46cfd713ce01d8 3,10,36,53
+  s_c63d89cb37b8bb::t_847927bd811af1 1-2,4-9,11-35,48-52,54-57
+agents/macos/Sources/curfew/Commands/Pair.swift
+  s_c63d89cb37b8bb::t_174a40d8fdc4ad 20,34-38,40,43,45,56
+  s_c63d89cb37b8bb::t_e97b72ea518aab 1-19,21-33,39,41-42,44,46-55,57-64
+agents/macos/Sources/CurfewSystem/Model/Log.swift
+  s_c63d89cb37b8bb::t_bab2108a80d182 1-19
+agents/macos/Sources/CurfewAgent/Control/ControlServer.swift
+  s_c63d89cb37b8bb::t_ae3f10bf50b320 1-125
+  s_c63d89cb37b8bb::t_da2714599859bf 126-128
+agents/macos/Sources/CurfewSystem/Mac/MacUserDirectory.swift
+  s_c63d89cb37b8bb::t_633d327a461ca1 1
+  s_c63d89cb37b8bb::t_31ba0c46fb4fc5 2-66
+agents/macos/Sources/CurfewSystem/Mac/AppSelection.swift
+  s_c63d89cb37b8bb::t_633d327a461ca1 69
+  s_c63d89cb37b8bb::t_073c1fa42bcfa2 1-68,70-83
+agents/macos/Sources/CurfewProtocol/Wire/Errors.swift
+  s_c63d89cb37b8bb::t_8910c09ab03d33 1-40
+agents/macos/Sources/curfew/CurfewCLI.swift
+  s_c63d89cb37b8bb::t_ec954976890990 1-15,20-39,42-47,49-65
+  s_c63d89cb37b8bb::t_6b67a658354258 16-19,40-41,48
+agents/macos/Sources/CurfewProtocol/Crypto/PairingCode.swift
+  s_c63d89cb37b8bb::t_51809f7fc1b117 1-25
+agents/macos/Sources/CurfewAgent/Agent/Agent+Pair.swift
+  s_c63d89cb37b8bb::t_b4fee99e46487f 1-53
+agents/macos/Sources/CurfewAgent/Store/StateStore.swift
+  s_c63d89cb37b8bb::t_7e068be3ea6579 21
+  s_c63d89cb37b8bb::t_f0e3e60ba3132f 1-20,22-70
+agents/macos/Tests/CurfewAgentTests/Harness.swift
+  s_c63d89cb37b8bb::t_6638a25b013cfe 1-109
+agents/macos/Sources/CurfewAgent/Timer/CountdownRules.swift
+  s_c63d89cb37b8bb::t_43e8b82a56e9cc 1-43
+agents/macos/Sources/CurfewApp/Views/AboutView.swift
+  s_c63d89cb37b8bb::t_f5936d2fe1d73a 1-94
+agents/macos/Packaging/curfew.rb
+  s_c63d89cb37b8bb::t_ab691336b94997 1-33
+agents/macos/Sources/CurfewApp/Components/Lede.swift
+  s_c63d89cb37b8bb::t_d60593be5f6d6e 1-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4df44bb719bff02cbf007d72f346e76079505681",
+  "prompts": {},
+  "sessions": {
+    "s_c63d89cb37b8bb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d37dcc8e-e1c8-4ced-a6ae-8bfdc3f3ca77",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Abdul Rafay <99marafay@gmail.com>"
+    }
+  }
+}
