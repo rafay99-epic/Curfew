@@ -1,0 +1,18 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: Curfew
+Label: Curfew
+Suite: stable
+Date: Fri, 02 Oct 2026 09:21:32 +0000
+Description: Curfew, the laptop side
+SHA256:
+ f11a2ad09c8ac909f700fd1c411fd2d3e6622622f56f301d85d22614e841b76b 994 Packages
+ ef9a5aad115a031d84a63be46f956c2a39627582325b5cf9e87c571b1592d56c 647 Packages.gz
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQQfMYkCMdNV0gi+F6eVE7cQy5JStgUCar93nAAKCRCVE7cQy5JS
+tqHpAQDuP5yCkJj8tOuPkaxkaAREfSyElYmhQdDH37Jp/bsNAQD/fZdxbJwCHjGA
+79QFBkAp4ToZYEYxeexgKOGgnf7bGgg=
+=7rAX
+-----END PGP SIGNATURE-----
