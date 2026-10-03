@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.icons.rounded.PowerSettingsNew
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material3.SnackbarHostState
@@ -26,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rafay99.curfew.core.Link
 import com.rafay99.curfew.core.computerLede
 import com.rafay99.curfew.core.formatLength
+import com.rafay99.curfew.core.isMac
 import com.rafay99.curfew.core.lengthArgs
 import com.rafay99.curfew.core.userLine
 import com.rafay99.curfew.data.Live
@@ -54,7 +56,7 @@ import com.rafay99.curfew.ui.theme.Type
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
-private enum class Ask { POWEROFF, REBOOT, REMOVE, RENAME }
+private enum class Ask { POWEROFF, WAKE_OFF, REBOOT, REMOVE, RENAME }
 
 @Composable
 fun ComputerScreen(repo: Repo, snack: SnackbarHostState, id: String, onBack: () -> Unit, onGone: () -> Unit, onUser: (String) -> Unit) {
@@ -84,6 +86,16 @@ fun ComputerScreen(repo: Repo, snack: SnackbarHostState, id: String, onBack: () 
         }
     }
 
+    fun wake(thenShutDown: Boolean) {
+        if (busy != null) return
+        busy = if (thenShutDown) "wake_off" else "wake"
+        scope.launch {
+            val said = repo.wake(id, thenShutDown)
+            busy = null
+            say(snack, said)
+        }
+    }
+
     fun setTimer(seconds: Int) {
         picked = seconds
         run("timer_set", "Shuts down in ${formatLength(seconds)}", lengthArgs(seconds, warn))
@@ -97,10 +109,24 @@ fun ComputerScreen(repo: Repo, snack: SnackbarHostState, id: String, onBack: () 
         }
         item { SerifTitle(c.title) { RenameButton { ask = Ask.RENAME } } }
         item { Lede(computerLede(live.link, live.status, c.os, remaining, c::userTitle)) }
+        if (live.link == Link.OFF && isMac(c.os) && c.wake.isNotEmpty()) {
+            item {
+                SlabButton(
+                    if (busy == "wake_off") "Waking…" else "Wake and shut down", Icons.Rounded.PowerSettingsNew,
+                    { ask = Ask.WAKE_OFF }, Modifier.fillMaxWidth().padding(horizontal = Space.Gutter), enabled = busy == null,
+                )
+            }
+            item {
+                GhostButton(
+                    if (busy == "wake") "Waking…" else "Wake", Icons.Rounded.LightMode,
+                    { wake(false) }, Modifier.fillMaxWidth().padding(start = Space.Gutter, end = Space.Gutter, top = 10.dp), enabled = busy == null,
+                )
+            }
+        }
         if (live.link == Link.ON) {
             item {
                 SlabButton(
-                    if (busy == "poweroff") "Shutting down…" else "Shut down now", Icons.Rounded.PowerSettingsNew,
+                    if (busy == "poweroff" || busy == "wake_off") "Shutting down…" else "Shut down now", Icons.Rounded.PowerSettingsNew,
                     { ask = Ask.POWEROFF }, Modifier.fillMaxWidth().padding(horizontal = Space.Gutter), enabled = busy == null,
                 )
             }
@@ -136,6 +162,10 @@ fun ComputerScreen(repo: Repo, snack: SnackbarHostState, id: String, onBack: () 
         Ask.POWEROFF -> ConfirmSheet(
             "Shut down ${c.title}?", "It shuts down straight away. Anything not saved is lost.", "Shut down",
             onConfirm = { ask = null; run("poweroff", "Shutting down ${c.title}") }, onDismiss = { ask = null },
+        )
+        Ask.WAKE_OFF -> ConfirmSheet(
+            "Shut down ${c.title}?", "It wakes up, then shuts down straight away. Anything not saved is lost.", "Wake and shut down",
+            onConfirm = { ask = null; wake(true) }, onDismiss = { ask = null },
         )
         Ask.REBOOT -> ConfirmSheet(
             "Restart ${c.title}?", "It restarts straight away. Anything not saved is lost.", "Restart",

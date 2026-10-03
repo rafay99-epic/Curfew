@@ -9,7 +9,7 @@ data class StoreData(val computers: List<Computer> = emptyList(), val goodbyes: 
         .put("computers", JSONArray(computers.map {
             JSONObject().put("id", it.id).put("name", it.name).put("phone", it.phoneId).put("key", it.key)
                 .put("host", it.host).put("port", it.port).put("added", it.addedAt)
-                .put("alias", it.alias).put("users", JSONObject(it.userAliases)).put("os", it.os)
+                .put("alias", it.alias).put("users", JSONObject(it.userAliases)).put("os", it.os).put("wake", it.wake)
         }))
         .put("goodbyes", JSONArray(goodbyes.map {
             JSONObject().put("id", it.id).put("phone", it.phoneId).put("key", it.key)
@@ -19,7 +19,7 @@ data class StoreData(val computers: List<Computer> = emptyList(), val goodbyes: 
 
     fun withPaired(c: Computer, now: Long): StoreData {
         val old = computers.find { it.id == c.id }
-        val named = if (old == null) c else c.copy(alias = old.alias, userAliases = old.userAliases, os = old.os)
+        val named = if (old == null) c else c.copy(alias = old.alias, userAliases = old.userAliases, os = old.os, wake = old.wake)
         return copy(
             computers = computers.filter { it.id != c.id } + named,
             goodbyes = goodbyes + listOfNotNull(old?.let { Goodbye(it.id, it.phoneId, it.key, it.host, it.port, now) }),
@@ -51,7 +51,8 @@ data class StoreData(val computers: List<Computer> = emptyList(), val goodbyes: 
                     val users = it.optJSONObject("users") ?: JSONObject()
                     Computer(it.getString("id"), it.getString("name"), it.getString("phone"), it.getString("key"),
                         it.getString("host"), it.getInt("port"), it.optLong("added"), it.optString("alias"),
-                        users.keys().asSequence().associateWith { k -> users.optString(k) }, it.optString("os"))
+                        users.keys().asSequence().associateWith { k -> users.optString(k) }, it.optString("os"),
+                        parseHardwareAddress(it.optString("wake")).orEmpty())
                 },
                 (0 until gs.length()).map { gs.getJSONObject(it) }.map {
                     Goodbye(it.getString("id"), it.getString("phone"), it.getString("key"),

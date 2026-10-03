@@ -25,7 +25,7 @@ data class UserInfo(
 
 data class Status(
     val name: String, val os: String, val users: List<UserInfo>, val timerSeconds: Int?, val warn: Boolean,
-    val caps: Set<String> = emptySet(),
+    val caps: Set<String> = emptySet(), val wake: String? = null,
 ) {
     fun headline(nameOf: (UserInfo) -> String = { it.display }): String {
         fun names(vararg s: UserState) = users.filter { it.state in s }.map(nameOf)
@@ -58,6 +58,7 @@ fun parseStatus(j: JSONObject): Status {
         timerSeconds = t?.optInt("remaining"),
         warn = t?.optBoolean("warn") ?: false,
         caps = (j.optJSONArray("caps") ?: JSONArray()).let { c -> (0 until c.length()).map { c.optString(it) }.toSet() },
+        wake = parseHardwareAddress(j.optString("wake")),
     )
 }
 

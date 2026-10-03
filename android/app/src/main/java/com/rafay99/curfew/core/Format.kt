@@ -37,6 +37,7 @@ fun errorText(error: String): String = when (error) {
     "not_logged_in" -> "That account is not logged in"
     "bad_user" -> "That account no longer exists"
     "is_admin" -> "Internet stays on for admin accounts"
+    "no_password" -> "Type the password at this Mac's login screen once first. After that the phone can log it in."
     "unsupported" -> "That computer cannot do this"
     "bad_op", "bad_args" -> "The agent on that computer is too old for this. Update it there."
     else -> "The computer could not do that"

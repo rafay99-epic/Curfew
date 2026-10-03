@@ -3,7 +3,7 @@ package com.rafay99.curfew.core
 data class Computer(
     val id: String, val name: String, val phoneId: String, val key: String,
     val host: String, val port: Int, val addedAt: Long,
-    val alias: String = "", val userAliases: Map<String, String> = emptyMap(), val os: String = "",
+    val alias: String = "", val userAliases: Map<String, String> = emptyMap(), val os: String = "", val wake: String = "",
 ) {
     val title get() = alias.ifBlank { name }
     fun userTitle(u: UserInfo) = userAliases[u.name] ?: u.display

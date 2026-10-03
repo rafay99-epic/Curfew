@@ -28,6 +28,7 @@ import com.rafay99.curfew.core.UserState
 import com.rafay99.curfew.core.accountLede
 import com.rafay99.curfew.core.formatCountdown
 import com.rafay99.curfew.core.formatLength
+import com.rafay99.curfew.core.isMac
 import com.rafay99.curfew.core.lengthArgs
 import com.rafay99.curfew.data.Live
 import com.rafay99.curfew.data.Repo
@@ -90,7 +91,9 @@ fun AccountScreen(repo: Repo, snack: SnackbarHostState, id: String, userName: St
     var netWarn by rememberSaveable { mutableStateOf(false) }
     var netPicked by rememberSaveable { mutableStateOf<Int?>(null) }
     var approvedUntil by remember { mutableStateOf<Long?>(null) }
-    val approvedLeft = secondsLeft(approvedUntil.takeIf { on && user?.state == UserState.NONE })
+    val mac = isMac(c.os)
+    val waiting = user != null && if (mac) user.state != UserState.ACTIVE else user.state == UserState.NONE
+    val approvedLeft = secondsLeft(approvedUntil.takeIf { on && waiting })
     val netLeft = secondsLeft(live.netEndsAt[userName].takeIf { on })
     LaunchedEffect(netLeft == 0) {
         if (netLeft == 0) {
@@ -142,11 +145,17 @@ fun AccountScreen(repo: Repo, snack: SnackbarHostState, id: String, userName: St
         item { SerifTitle(name) { RenameButton { ask = Ask.RENAME } } }
         item { Lede(accountLede(on, user, "net" in caps, netLeft?.let { clockIn(context, it) })) }
         if (approvedLeft != null && approvedLeft > 0) item {
-            Lede(listOf(
-                Part("Now pick $name on the login screen. It opens without the password, once, for "),
-                Part(formatCountdown(approvedLeft), strong = true),
-                Part(". If it already asks for the password, press Enter there."),
-            ))
+            val left = Part(formatCountdown(approvedLeft), strong = true)
+            Lede(when {
+                !mac -> listOf(
+                    Part("Now pick $name on the login screen. It opens without the password, once, for "), left,
+                    Part(". If it already asks for the password, press Enter there."),
+                )
+                user?.state == UserState.NONE -> listOf(
+                    Part("Now choose $name on the login screen of ${c.title} and press Enter with the password empty. Works once, for "), left, Part("."),
+                )
+                else -> listOf(Part("Now press Enter on the lock screen of ${c.title} with the password empty. Works once, for "), left, Part("."))
+            })
         }
         if (on && user != null && "login" in caps && user.state != UserState.ACTIVE) item {
             SlabButton(

@@ -126,8 +126,9 @@ class Repo(private val app: Context) {
 
     private fun gotStatus(c: Computer, j: JSONObject) {
         val st = parseStatus(j)
-        if (st.name != c.name || st.os != c.os)
-            save { s -> s.copy(computers = s.computers.map { if (it.id == c.id) it.copy(name = st.name, os = st.os) else it }) }
+        val wake = st.wake.orEmpty()
+        if (st.name != c.name || st.os != c.os || wake != c.wake)
+            save { s -> s.copy(computers = s.computers.map { if (it.id == c.id) it.copy(name = st.name, os = st.os, wake = wake) else it }) }
         setLive(c.id) { old ->
             val now = SystemClock.elapsedRealtime()
             fun steady(seconds: Int?, before: Long?): Long? {
@@ -174,6 +175,22 @@ class Repo(private val app: Context) {
             reply is Reply.Unpaired -> "This phone was removed from that computer"
             else -> "Could not reach ${c.title}"
         }
+    }
+
+    suspend fun wake(id: String, thenShutDown: Boolean): String {
+        val c = _store.value.computers.find { it.id == id } ?: return "That computer was removed"
+        if (c.wake.isEmpty()) return errorText("unsupported")
+        val until = SystemClock.elapsedRealtime() + 45_000
+        while (true) {
+            sendWake(app, c.wake, c.host)
+            refresh(id)
+            if (_live.value[id]?.link == Link.ON) break
+            if (SystemClock.elapsedRealtime() >= until)
+                return "${c.title} did not wake up. Over Wi-Fi a Mac only wakes with an Apple TV or HomePod at home."
+            delay(3000)
+        }
+        if (!thenShutDown) return "${c.title} is awake"
+        return command(id, "poweroff") ?: "Shutting down ${c.title}"
     }
 
     suspend fun apps(id: String, user: String): List<AppInfo>? = withContext(Dispatchers.IO) {
