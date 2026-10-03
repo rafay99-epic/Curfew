@@ -1,27 +1,36 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+val keyFile: File = rootProject.file("key.properties")
+val keys = Properties().apply { if (keyFile.isFile) keyFile.inputStream().use(::load) }
+
+fun key(name: String): String =
+    keys.getProperty(name) ?: throw GradleException("android/key.properties has no $name")
+
 android {
-    namespace = "app.curfew"
-    compileSdk = 35
+    namespace = "com.rafay99.curfew"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "app.curfew"
+        applicationId = "com.rafay99.curfew"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 2
-        versionName = "1.1"
+        targetSdk = 36
+        versionCode = 4
+        versionName = "2.1.0"
     }
     signingConfigs {
-        // A local key made by build.sh, only so the phone accepts updates of the same app.
         create("release") {
-            storeFile = rootProject.file("curfew-release.jks")
-            storePassword = "curfew-local"
-            keyAlias = "curfew"
-            keyPassword = "curfew-local"
+            if (keyFile.isFile) {
+                storeFile = file(key("storeFile"))
+                storePassword = key("storePassword")
+                keyAlias = key("keyAlias")
+                keyPassword = key("keyPassword")
+            }
         }
     }
     buildTypes {
@@ -37,7 +46,17 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+}
+
+gradle.taskGraph.whenReady {
+    val signs = allTasks.any { it.project == project && it.name in setOf("packageRelease", "signReleaseBundle") }
+    if (signs && !keyFile.isFile) {
+        throw GradleException("android/key.properties is missing. Release builds are signed with the upload key it points to (storeFile, storePassword, keyAlias, keyPassword).")
+    }
 }
 
 dependencies {

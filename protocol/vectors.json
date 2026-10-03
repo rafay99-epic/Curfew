@@ -1,0 +1,58 @@
+{
+  "derive_key": [
+    {
+      "code": "ABCD2345EFGH6789",
+      "snonce": "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+      "cnonce": "cnonce1234",
+      "phone": "phone01",
+      "key_hex": "686501808f45dc33fe1892a7239cace87225f6e4295a67504abb251ec1e11ae6"
+    },
+    {
+      "code": "ZZZZ2222YYYY3333",
+      "snonce": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "cnonce": "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
+      "phone": "p",
+      "key_hex": "5446313a259d9ba250d0e344a45026649c074f95f0668cbbbd55596e90b2d2f3"
+    }
+  ],
+  "mac": [
+    {
+      "key_hex": "686501808f45dc33fe1892a7239cace87225f6e4295a67504abb251ec1e11ae6",
+      "parts": [
+        "req",
+        "phone01",
+        "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+        "cnonce1234",
+        "{\"op\": \"status\"}"
+      ],
+      "mac": "38bdd1a2e97b38d92b476ccf17d70f2f58c0e688c979783a547fd482c0d26696"
+    },
+    {
+      "key_hex": "686501808f45dc33fe1892a7239cace87225f6e4295a67504abb251ec1e11ae6",
+      "parts": [
+        "res",
+        "phone01",
+        "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+        "cnonce1234",
+        "{\"ok\": true, \"name\": \"Mäc\"}"
+      ],
+      "mac": "2cb9c1542270ef6e91fb3c1614344a9b13f2818ffc9b20b65f8b515248c8d801"
+    },
+    {
+      "key_hex": "41424344323334354546474836373839",
+      "parts": [
+        "pair",
+        "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+        "cnonce1234",
+        "{\"name\": \"Rafay's phone\"}"
+      ],
+      "mac": "61a0ffc9e36e6515149f4670cef4482855030ca8fda84ec78b1db525da246e0a"
+    }
+  ],
+  "clean_code": [
+    {
+      "in": "abcd-2345 efgh 6789",
+      "out": "ABCD2345EFGH6789"
+    }
+  ]
+}
