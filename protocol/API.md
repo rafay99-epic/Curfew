@@ -66,7 +66,7 @@ Unauthenticated refusals (HTTP 4xx, treat as hints only): `unknown_phone`, `bad_
 
 | op | extra fields | answer |
 |---|---|---|
-| `status` | | `id`, `name`, `os`, `caps`, `users: [{name, full, admin, state, net, net_timer?}]`, `timer: null \| {remaining, warn}` |
+| `status` | | `id`, `name`, `os`, `caps`, `users: [{name, full, admin, state, net, net_timer?}]`, `timer: null \| {remaining, warn}`, `wake?` |
 | `apps` | `user` | `apps: [{name, detail, age, terminal}]`, newest first, at most 15 |
 | `poweroff`, `reboot` | | |
 | `timer_set` | `seconds` (10-86400) or `minutes` (1-1440), `warn` (bool) | `timer` |
@@ -91,9 +91,28 @@ always `on`.
 
 `state` is `none`, `logged_in`, `locked` or `active`. `remaining` and `age` are seconds, so
 clients never compare clocks. Failures are authenticated too: `{"ok": false, "error": ...}` with
-`bad_op`, `bad_user`, `bad_args`, `not_logged_in`, `is_admin`, `unsupported`, `failed`, or **`unpaired`**: the phone was
+`bad_op`, `bad_user`, `bad_args`, `not_logged_in`, `is_admin`, `no_password`, `unsupported`, `failed`, or **`unpaired`**: the phone was
 removed with `sudo curfew unpair`; it is signed with the old key so the client can trust it and
 drop the computer.
+
+## macOS agent
+
+The macOS agent answers the same operations, with these differences:
+
+- `caps` is `seconds` and `net`, plus `login` while "Log in from the phone" is turned on in the Curfew app on the Mac.
+- `wake` is the hardware address of the network interface the agent answers on, as `aa:bb:cc:dd:ee:ff`. A
+  client that cannot reach the computer may send a Wake-on-LAN packet to it (UDP port 9, to the broadcast
+  address), then try again. It only works when "Wake for the phone" is on, and over Wi-Fi only with an
+  Apple TV or HomePod at home.
+- `login` always answers `how: approved`. For an account that is not logged in, choose it on the login
+  screen and press Enter with the password field empty. For a locked screen, press Enter on it with the
+  password field empty. Either works once, within `seconds`. The Mac fills in the password that was last
+  typed at its login screen, so an account whose password was never typed there since Curfew was set up
+  gets `no_password`.
+- `lock` on an account that is logged in but not on the screen does nothing and answers `ok`: switching
+  back to it already asks for its password.
+- `net_set` blocks TCP and UDP from that account's programs with pf. Apple services that act for the
+  account from their own processes can still get through.
 
 ## Flood limits
 
