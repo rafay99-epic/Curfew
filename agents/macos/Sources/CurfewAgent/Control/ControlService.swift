@@ -4,7 +4,7 @@ import CurfewSystem
 
 public actor ControlService {
     private let store: StateStore
-    private let host: any HostInfo
+    private let system: SystemServices
     private let port: UInt16
     private let dry: Bool
     private let log: Log
@@ -12,11 +12,11 @@ public actor ControlService {
     private var watched: (code: String, started: Double)?
 
     public init(
-        store: StateStore, host: any HostInfo, port: UInt16, dry: Bool, log: Log,
+        store: StateStore, system: SystemServices, port: UInt16, dry: Bool, log: Log,
         lanAddress: @escaping @Sendable () -> String? = LocalNetwork.lanAddress
     ) {
         self.store = store
-        self.host = host
+        self.system = system
         self.port = port
         self.dry = dry
         self.log = log
@@ -55,13 +55,40 @@ public actor ControlService {
             guard let phone = try await store.update({ $0.removePhone(id, now: now) }) else { throw ControlError.noPhone }
             log("removed phone \"\(phone.name)\"")
             return ["ok": true, "name": .string(phone.name)]
+        case .set(let setting, let on):
+            try apply(setting, on)
+            try await store.update { state in
+                switch setting {
+                case .login: state.settings.login = on
+                case .wake: state.settings.wake = on
+                case .awake: state.settings.awake = on
+                }
+            }
+            return ["ok": true]
+        }
+    }
+
+    private func apply(_ setting: ControlSetting, _ on: Bool) throws {
+        switch setting {
+        case .login:
+            guard system.login.setEnabled(on) else { throw on ? ControlError.loginUnavailable : ControlError.failed }
+        case .wake:
+            guard system.settings.setWakesForNetwork(on) else { throw ControlError.failed }
+        case .awake:
+            system.settings.stayAwake(on)
         }
     }
 
     private func status() async throws -> ControlStatus {
         let state = try await store.read()
         let phones = state.orderedPhones.map { ControlPhone(id: $0.id, name: $0.phone.name, pairedAt: $0.phone.added) }
-        return ControlStatus(name: host.hostName(), version: CurfewVersion.current, dry: dry, phones: phones, pairing: openOffer(in: state))
+        let settings = ControlSettings(
+            login: state.settings.login, loginReady: system.login.isInstalled(), wake: state.settings.wake, awake: state.settings.awake
+        )
+        return ControlStatus(
+            name: system.host.hostName(), version: CurfewVersion.current, dry: dry, phones: phones,
+            pairing: openOffer(in: state), settings: settings
+        )
     }
 
     private func openOffer(in state: AgentState) -> PairingOffer? {

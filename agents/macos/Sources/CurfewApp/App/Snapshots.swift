@@ -12,12 +12,15 @@ enum Snapshots {
         ControlPhone(id: "a1b2c3d4e5f60718", name: "Rafay's Pixel", pairedAt: 1_790_000_000),
         ControlPhone(id: "0918273645aabbcc", name: "Work phone", pairedAt: 1_790_500_000),
     ]
+    static let settings = ControlSettings(login: false, loginReady: true, wake: true, awake: false)
     static let offer = PairingOffer(address: "192.168.1.24:787", agent: "0b825f00961665a4", code: "K7PMQ2XR9DHA4FWE", expiresIn: 120)
 
     static var pages: [(String, CurfewModel)] {
         [
             ("first-run", .sample(.setup)),
-            ("main", .sample(.running, phones: phones)),
+            ("main", .sample(.running, phones: phones, settings: settings)),
+            ("main-login", .sample(.running, phones: phones, settings: ControlSettings(login: true, loginReady: true, wake: true, awake: true))),
+            ("update", .sample(.running, phones: phones, settings: settings, serviceVersion: "2.0.0")),
             ("pairing", .sample(.running, phones: phones, pairing: offer, secondsLeft: 102)),
             ("about", .sample(.running, phones: phones, screen: .about)),
             ("not-running", .sample(.stopped)),

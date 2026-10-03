@@ -1,6 +1,22 @@
 import CurfewControl
+import CurfewSystem
 import Darwin
 import Foundation
+
+struct SystemTeardown: Sendable {
+    let login: any LoginGate
+    let firewall: any Firewall
+    let power: any PowerSettings
+
+    static func live(_ layout: Layout) -> SystemTeardown {
+        let log = Log(dry: false)
+        return SystemTeardown(
+            login: LoginRights(log: log, bundlePath: layout.plugin),
+            firewall: PacketFilter(log: log, tokenPath: layout.supportDirectory + "/pf.token"),
+            power: MacPowerSettings(log: log)
+        )
+    }
+}
 
 struct CommandRunner: Sendable {
     let run: @Sendable ([String]) -> (status: Int32, output: String)
@@ -44,6 +60,7 @@ struct Installer {
 
     let layout: Layout
     let runner: CommandRunner?
+    var teardown: SystemTeardown?
     var owned: Bool = geteuid() == 0
 
     static func launchDaemon(binary: String) throws -> Data {
@@ -61,8 +78,9 @@ struct Installer {
         try makeDirectories(layout.launchDaemonDirectory)
         try makeDirectories(layout.commandDirectory)
         try copyBinary(from: source)
+        var notes = try copyPlugin(from: source)
         try writeFile(layout.launchDaemon, contents: Self.launchDaemon(binary: layout.binary), mode: 0o644)
-        var notes = linkCommand()
+        notes += linkCommand()
         if let runner {
             try startService(runner)
             notes += allowThroughFirewall(runner)
@@ -70,13 +88,27 @@ struct Installer {
         return notes
     }
 
-    func uninstall(purge: Bool) throws {
+    func uninstall(purge: Bool) throws -> [String] {
+        var notes: [String] = []
         if let runner {
             _ = runner.run([Self.launchctl, "bootout", Self.service])
             if FileManager.default.fileExists(atPath: layout.binary) {
                 _ = runner.run([Self.firewall, "--remove", layout.binary])
             }
         }
+        var loginRestored = true
+        if let teardown {
+            loginRestored = teardown.login.setEnabled(false) || !teardown.login.isEnabled()
+            if !teardown.firewall.apply(blocked: []) { notes.append("The firewall rules of Curfew could not be removed. A restart clears them.") }
+            teardown.power.mirrorShutdown(at: nil)
+            teardown.power.stayAwake(false)
+        }
+        if loginRestored {
+            try remove(layout.plugin)
+        } else {
+            notes.append("The login screen still uses Curfew, so its login plugin was left in place. Run sudo curfew uninstall again.")
+        }
+        try remove(layout.loginDirectory)
         try remove(layout.launchDaemon)
         if (try? FileManager.default.destinationOfSymbolicLink(atPath: layout.command)) == layout.binary {
             try remove(layout.command)
@@ -88,6 +120,7 @@ struct Installer {
         if purge {
             try remove(layout.supportDirectory)
         }
+        return notes
     }
 
     func restart() throws {
@@ -123,6 +156,32 @@ struct Installer {
         guard resolved != URL(fileURLWithPath: target).resolvingSymlinksInPath().path else { return }
         guard let contents = FileManager.default.contents(atPath: resolved) else { throw InstallError.file(resolved, errno) }
         try writeFile(target, contents: contents, mode: 0o755)
+    }
+
+    private func copyPlugin(from source: String) throws -> [String] {
+        let bundled = URL(fileURLWithPath: source).resolvingSymlinksInPath().deletingLastPathComponent().appending(path: "CurfewLogin.bundle").path
+        guard FileManager.default.fileExists(atPath: bundled + "/Contents/MacOS/CurfewLogin") else {
+            return ["This copy of curfew has no login plugin, so login from the phone is not available."]
+        }
+        try makeDirectories(layout.pluginDirectory)
+        let staging = layout.plugin + ".new"
+        try remove(staging)
+        do {
+            try FileManager.default.copyItem(atPath: bundled, toPath: staging)
+        } catch {
+            throw InstallError.file(staging, errno)
+        }
+        let files = FileManager.default.enumerator(atPath: staging)?.compactMap { $0 as? String } ?? []
+        for path in [staging] + files.map({ staging + "/" + $0 }) {
+            var info = stat()
+            guard lstat(path, &info) == 0 else { continue }
+            removexattr(path, "com.apple.quarantine", XATTR_NOFOLLOW)
+            try check(path, chmod(path, info.st_mode & S_IFMT == S_IFDIR || info.st_mode & 0o111 != 0 ? 0o755 : 0o644))
+            if owned { try check(path, lchown(path, 0, 0)) }
+        }
+        try remove(layout.plugin)
+        try check(layout.plugin, rename(staging, layout.plugin))
+        return []
     }
 
     private func writeFile(_ path: String, contents: Data, mode: mode_t) throws {

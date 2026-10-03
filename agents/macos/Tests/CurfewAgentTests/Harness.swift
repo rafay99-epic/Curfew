@@ -22,9 +22,9 @@ struct TestPhone: Sendable {
     let key: [UInt8]
 }
 
-let kidsFake: FakeSystem = {
+func kidsFake(wake: String? = nil) -> FakeSystem {
     let json = """
-        {"name": "kids-laptop",
+        {"name": "kids-laptop", "wake": \(wake.map { "\"\($0)\"" } ?? "null"),
          "users": [
           {"name": "dad", "full": "Dad", "admin": true, "state": "none"},
           {"name": "classes", "full": "Ali (classes)", "admin": false, "state": "locked"},
@@ -36,19 +36,21 @@ let kidsFake: FakeSystem = {
     } catch {
         fatalError("bad fake: \(error)")
     }
-}()
+}
 
 struct Harness: Sendable {
     let directory: String
     let recorder = LogRecorder()
     let store: StateStore
+    let system: SystemServices
     let agent: Agent
 
-    init() {
+    init(wake: String? = nil) {
         directory = NSTemporaryDirectory() + "curfew-test-" + UUID().uuidString
         store = StateStore(directory: directory)
         let log = recorder.log
-        agent = Agent(store: store, system: .fake(kidsFake, log: log), log: log)
+        system = .fake(kidsFake(wake: wake), log: log)
+        agent = Agent(store: store, system: system, log: log)
     }
 
     func cleanUp() {

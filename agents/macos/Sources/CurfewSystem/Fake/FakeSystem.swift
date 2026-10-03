@@ -11,6 +11,7 @@ public struct FakeSystem: Sendable, Decodable {
     public let name: String?
     public let users: [User]
     public let apps: [String: [OpenApp]]?
+    public let wake: String?
 
     public static func load(path: String) throws -> FakeSystem {
         try JSONDecoder().decode(FakeSystem.self, from: Data(contentsOf: URL(fileURLWithPath: path)))
@@ -38,5 +39,9 @@ extension FakeSystem: UserDirectory, SessionMonitor, AppMonitor, HostInfo {
 
     public func osName() -> String {
         MacHost().osName()
+    }
+
+    public func wakeAddress() -> String? {
+        wake
     }
 }

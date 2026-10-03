@@ -11,6 +11,7 @@ struct ControlRig {
     let store: StateStore
     let agent: Agent
     let service: ControlService
+    let system: SystemServices
     var socket: String { directory + "/control.sock" }
 
     init() throws {
@@ -19,7 +20,8 @@ struct ControlRig {
         let log = Log(dry: true) { _ in }
         let fake = try JSONDecoder().decode(FakeSystem.self, from: Data(#"{"name": "MacBook Pro", "users": []}"#.utf8))
         agent = Agent(store: store, system: .fake(fake, log: log), log: log)
-        service = ControlService(store: store, host: fake, port: 8787, dry: true, log: log) { "192.168.1.24" }
+        system = .fake(fake, log: log)
+        service = ControlService(store: store, system: system, port: 8787, dry: true, log: log) { "192.168.1.24" }
     }
 
     func serve(policy: PeerPolicy = PeerPolicy(dry: true) { _ in false }) throws -> ControlServer {
@@ -77,6 +79,22 @@ struct ControlRig {
         #expect(try rig.send(.unpair(phone: phone.id)) == ["ok": true, "name": "Rafay's Pixel"])
         #expect(ControlError(reply: try rig.send(.unpair(phone: phone.id))) == .noPhone)
         #expect(try await rig.store.read().removed[phone.id] != nil)
+    }
+
+    @Test func settingsAreChangedOverTheSocket() async throws {
+        let rig = try ControlRig()
+        defer { rig.cleanUp() }
+        let server = try rig.serve()
+        defer { server.stop() }
+        let before = try #require(ControlStatus(try rig.send(.status)))
+        #expect(before.settings == ControlSettings(login: false, loginReady: true, wake: true, awake: false))
+        #expect(try rig.send(.set(.login, true)) == ["ok": true])
+        #expect(try rig.send(.set(.awake, true)) == ["ok": true])
+        #expect(try rig.send(.set(.wake, false)) == ["ok": true])
+        let after = try #require(ControlStatus(try rig.send(.status)))
+        #expect(after.settings == ControlSettings(login: true, loginReady: true, wake: false, awake: true))
+        #expect(rig.system.login.isEnabled())
+        #expect(try await rig.store.read().settings == AgentState.MacSettings(login: true, wake: false, awake: true))
     }
 
     @Test func cancelWithdrawsOnlyTheGivenCode() async throws {

@@ -12,10 +12,10 @@ struct FirstRunView: View {
                 .strong("once"),
                 .plain(".")
             )
-            HairlineRow {
-                Text("Background service").font(Theme.sans(14.5)).foregroundStyle(Theme.text)
-            } trailing: {
-                Text("about 3 MB, idle at 0%").font(Theme.mono(12.5)).foregroundStyle(Theme.dim)
+            VStack(spacing: 0) {
+                Row(title: "Background service", detail: "about 3 MB, idle at 0%")
+                Row(title: "Log in from the phone", detail: "optional")
+                Row(title: "Wake for the phone", detail: "on")
             }
             .padding(.top, 20)
             if let problem = model.problem {
@@ -32,6 +32,19 @@ struct FirstRunView: View {
             }
             .keyboardShortcut(.cancelAction)
             .disabled(model.work != nil)
+        }
+    }
+}
+
+private struct Row: View {
+    let title: String
+    let detail: String
+
+    var body: some View {
+        HairlineRow {
+            Text(title).font(Theme.sans(14.5)).foregroundStyle(Theme.text)
+        } trailing: {
+            Text(detail).font(Theme.mono(12.5)).foregroundStyle(Theme.dim)
         }
     }
 }

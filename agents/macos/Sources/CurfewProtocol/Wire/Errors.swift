@@ -30,6 +30,7 @@ public enum OpError: String, Sendable, Error {
     case badRequest = "bad_request"
     case notLoggedIn = "not_logged_in"
     case isAdmin = "is_admin"
+    case noPassword = "no_password"
     case unsupported
     case failed
     case unpaired

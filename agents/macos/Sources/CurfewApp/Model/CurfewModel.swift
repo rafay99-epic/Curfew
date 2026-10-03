@@ -17,6 +17,7 @@ final class CurfewModel {
     enum Work: Equatable {
         case settingUp
         case starting
+        case updating
         case removing
     }
 
@@ -33,6 +34,10 @@ final class CurfewModel {
     private(set) var notice: String?
     private(set) var problem: String?
     private(set) var work: Work?
+    private(set) var settings: ControlSettings?
+    private(set) var changing: ControlSetting?
+    private(set) var serviceVersion: String?
+    var confirmingLogin = false
     var screen: Screen = .home
 
     @ObservationIgnored private let client: ControlClient
@@ -58,6 +63,10 @@ final class CurfewModel {
 
     var version: String { CurfewVersion.current }
 
+    var needsUpdate: Bool {
+        stage == .running && serviceVersion.map { $0 != version } == true
+    }
+
     func refresh() async {
         do {
             apply(try await client.status())
@@ -77,6 +86,34 @@ final class CurfewModel {
 
     func startAgain() async {
         await perform(.restart, as: .starting, until: .running)
+    }
+
+    func update() async {
+        await perform(.install, as: .updating, until: .running)
+    }
+
+    func toggle(_ setting: ControlSetting) {
+        guard let settings, changing == nil else { return }
+        if setting == .login, !settings.login {
+            confirmingLogin = true
+            return
+        }
+        Task { await set(setting, !settings[setting]) }
+    }
+
+    func set(_ setting: ControlSetting, _ on: Bool) async {
+        changing = setting
+        notice = nil
+        problem = nil
+        defer { changing = nil }
+        do {
+            try await client.set(setting, on)
+        } catch ControlError.loginUnavailable {
+            problem = "macOS did not load the login plugin, so the login screen was left as it was."
+        } catch {
+            problem = "Could not change \(setting.title.lowercased())."
+        }
+        await refresh()
     }
 
     func removeFromMac() async {
@@ -138,6 +175,8 @@ final class CurfewModel {
         stage = .running
         computerName = status.name
         phones = status.phones
+        settings = status.settings
+        serviceVersion = status.version
         if pairing == nil, let offer = status.pairing {
             begin(offer)
         }
@@ -178,7 +217,7 @@ final class CurfewModel {
         } catch {
             switch error {
             case .cancelled: break
-            case .missingTool: problem = "The app is missing its curfew tool. Download Curfew again."
+            case .missingTool: problem = "The app is missing its curfew tool. Install Curfew again."
             case .failed(let message): problem = message
             }
             return
@@ -194,7 +233,8 @@ final class CurfewModel {
 #if DEBUG
 extension CurfewModel {
     static func sample(
-        _ stage: Stage, phones: [ControlPhone] = [], pairing: PairingOffer? = nil, secondsLeft: Int = 0, screen: Screen = .home
+        _ stage: Stage, phones: [ControlPhone] = [], pairing: PairingOffer? = nil, secondsLeft: Int = 0, screen: Screen = .home,
+        settings: ControlSettings? = nil, serviceVersion: String? = nil
     ) -> CurfewModel {
         let model = CurfewModel(
             client: ControlClient(path: "/nonexistent"), runner: AppleScriptRunner(tool: nil),
@@ -205,6 +245,8 @@ extension CurfewModel {
         model.pairing = pairing
         model.secondsLeft = secondsLeft
         model.screen = screen
+        model.settings = settings
+        model.serviceVersion = serviceVersion ?? model.version
         return model
     }
 }

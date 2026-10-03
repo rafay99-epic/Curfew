@@ -5,6 +5,7 @@ import Testing
 @Suite struct ControlWireTests {
     @Test(arguments: [
         ControlRequest.status, .pairStart, .pairStatus(code: "ABCD"), .pairCancel(code: "ABCD"), .unpair(phone: "0011223344556677"),
+        .set(.login, true), .set(.wake, false), .set(.awake, true),
     ])
     func requestsRoundTrip(_ request: ControlRequest) throws {
         let line = request.json.text
@@ -16,6 +17,8 @@ import Testing
         #expect(ControlRequest(["cmd": "reboot"]) == nil)
         #expect(ControlRequest(["cmd": "pair_status"]) == nil)
         #expect(ControlRequest(["cmd": "unpair", "phone": 7]) == nil)
+        #expect(ControlRequest(["cmd": "set", "name": "firewall", "on": true]) == nil)
+        #expect(ControlRequest(["cmd": "set", "name": "login", "on": 1]) == nil)
         #expect(ControlRequest([1, 2]) == nil)
     }
 
@@ -23,7 +26,8 @@ import Testing
         let offer = PairingOffer(address: "192.168.1.24:787", agent: "0b825f00961665a4", code: "K7PMQ2XR9DHA4FWE", expiresIn: 102)
         let status = ControlStatus(
             name: "MacBook Pro", version: "2.0.0", dry: false,
-            phones: [ControlPhone(id: "a1", name: "Rafay's Pixel", pairedAt: 1_700_000_000)], pairing: offer
+            phones: [ControlPhone(id: "a1", name: "Rafay's Pixel", pairedAt: 1_700_000_000)], pairing: offer,
+            settings: ControlSettings(login: true, loginReady: true, wake: false, awake: true)
         )
         let parsed = try #require(JSONValue(parsing: status.json.text))
         #expect(parsed["running"] == true)
@@ -44,6 +48,7 @@ import Testing
 
     @Test func errorsAreReadBack() {
         #expect(ControlError(reply: ControlError.noPhone.json) == .noPhone)
+        #expect(ControlError(reply: ControlError.loginUnavailable.json) == .loginUnavailable)
         #expect(ControlError(reply: ["ok": false, "error": "something new"]) == .failed)
         #expect(ControlError(reply: ["ok": true]) == nil)
     }

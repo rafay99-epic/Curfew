@@ -18,7 +18,26 @@ public final class Agent: Sendable {
     }
 
     public func start() async {
+        await applySettings()
         await scheduler.reschedule()
+    }
+
+    func applySettings() async {
+        do {
+            let state = try await store.read()
+            let settings = state.settings
+            if !system.login.sync(wanted: settings.login) {
+                try await store.update { $0.settings.login = false }
+                log("login from the phone was turned off: macOS did not accept the login plugin")
+            }
+            if settings.wake, !system.settings.wakesForNetwork() {
+                _ = system.settings.setWakesForNetwork(true)
+            }
+            system.settings.stayAwake(settings.awake)
+            if !system.applyNet(state) { log("the firewall could not be set up") }
+        } catch {
+            log("could not read the settings: \(error)")
+        }
     }
 
     public func statusReport() async throws -> JSONValue {

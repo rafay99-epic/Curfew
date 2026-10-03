@@ -66,6 +66,32 @@ public struct AgentState: Sendable, Equatable, Codable {
         public var deadline: Double?
         public var warn: Bool?
         public var warned: Bool?
+
+        public init(blocked: Bool? = nil, deadline: Double? = nil, warn: Bool? = nil, warned: Bool? = nil) {
+            self.blocked = blocked
+            self.deadline = deadline
+            self.warn = warn
+            self.warned = warned
+        }
+    }
+
+    public struct MacSettings: Sendable, Equatable, Codable {
+        public var login: Bool
+        public var wake: Bool
+        public var awake: Bool
+
+        public init(login: Bool = false, wake: Bool = true, awake: Bool = false) {
+            self.login = login
+            self.wake = wake
+            self.awake = awake
+        }
+
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            login = try container.decodeIfPresent(Bool.self, forKey: .login) ?? false
+            wake = try container.decodeIfPresent(Bool.self, forKey: .wake) ?? true
+            awake = try container.decodeIfPresent(Bool.self, forKey: .awake) ?? false
+        }
     }
 
     public struct LastPaired: Sendable, Equatable, Codable {
@@ -85,10 +111,12 @@ public struct AgentState: Sendable, Equatable, Codable {
     public var pairing: Pairing?
     public var timer: Countdown?
     public var lastPaired: LastPaired?
+    public var settings = MacSettings()
 
     enum CodingKeys: String, CodingKey {
         case id, phones, removed, net, pairing, timer
         case lastPaired = "last_paired"
+        case settings = "mac"
     }
 
     public init(id: String) {
@@ -107,6 +135,7 @@ public struct AgentState: Sendable, Equatable, Codable {
         pairing = try container.decodeIfPresent(Pairing.self, forKey: .pairing)
         timer = try container.decodeIfPresent(Countdown.self, forKey: .timer)
         lastPaired = try container.decodeIfPresent(LastPaired.self, forKey: .lastPaired)
+        settings = try container.decodeIfPresent(MacSettings.self, forKey: .settings) ?? MacSettings()
     }
 
     public func encode(to encoder: any Encoder) throws {
@@ -118,5 +147,6 @@ public struct AgentState: Sendable, Equatable, Codable {
         try container.encode(pairing, forKey: .pairing)
         try container.encode(timer, forKey: .timer)
         try container.encodeIfPresent(lastPaired, forKey: .lastPaired)
+        try container.encode(settings, forKey: .settings)
     }
 }

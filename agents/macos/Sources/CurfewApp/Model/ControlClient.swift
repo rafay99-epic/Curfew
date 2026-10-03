@@ -36,6 +36,10 @@ actor ControlClient {
         _ = try await send(.unpair(phone: phone))
     }
 
+    func set(_ setting: ControlSetting, _ on: Bool) async throws {
+        _ = try await send(.set(setting, on))
+    }
+
     private func send(_ request: ControlRequest) async throws -> JSONValue {
         let path = self.path
         let result = await withCheckedContinuation { (done: CheckedContinuation<Result<JSONValue, ControlSocketError>, Never>) in

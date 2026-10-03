@@ -1,5 +1,6 @@
 import CurfewAgent
 import CurfewProtocol
+import CurfewSystem
 import Foundation
 
 enum Status {

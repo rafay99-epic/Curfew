@@ -23,6 +23,19 @@ extension AgentState.Countdown {
     }
 }
 
+extension AgentState.NetEntry {
+    public func step(at now: Double) -> CountdownStep? {
+        guard let deadline else { return nil }
+        let left = deadline - now
+        if left <= 0 { return .fire }
+        return warn == true && warned != true && left <= AgentState.Countdown.warningLead ? .warn : nil
+    }
+
+    public var nextEvent: Double? {
+        deadline.map { warn == true && warned != true ? $0 - AgentState.Countdown.warningLead : $0 }
+    }
+}
+
 public enum Wall {
     public static func now() -> Double {
         Date().timeIntervalSince1970

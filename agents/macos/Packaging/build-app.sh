@@ -6,6 +6,7 @@ VERSION="$(tr -d '[:space:]' < VERSION)"
 APP=.build/Curfew.app
 ZIP=.build/Curfew.zip
 ICONSET=.build/AppIcon.iconset
+PLUGIN="$APP/Contents/Resources/CurfewLogin.bundle"
 ARCHS=(--arch arm64 --arch x86_64)
 
 swift build -c release "${ARCHS[@]}" --product curfew
@@ -18,6 +19,36 @@ cp "$BIN/CurfewApp" "$APP/Contents/MacOS/Curfew"
 cp "$BIN/curfew" "$APP/Contents/Resources/curfew"
 strip -x "$APP/Contents/MacOS/Curfew" "$APP/Contents/Resources/curfew"
 cp -R Resources/Fonts Resources/Licenses "$APP/Contents/Resources/"
+
+mkdir -p "$PLUGIN/Contents/MacOS"
+clang -bundle -O2 -Wall -Wextra -Werror -arch arm64 -arch x86_64 -mmacosx-version-min=14.0 -fvisibility=hidden \
+  -I Sources/CurfewLogin/include Sources/CurfewLogin/*.c \
+  -framework Security -framework CoreFoundation -framework SystemConfiguration \
+  -o "$PLUGIN/Contents/MacOS/CurfewLogin"
+strip -x "$PLUGIN/Contents/MacOS/CurfewLogin"
+cat > "$PLUGIN/Contents/Info.plist" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleIdentifier</key>
+  <string>com.rafay99.curfew.login</string>
+  <key>CFBundleName</key>
+  <string>CurfewLogin</string>
+  <key>CFBundleExecutable</key>
+  <string>CurfewLogin</string>
+  <key>CFBundlePackageType</key>
+  <string>BNDL</string>
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+  <key>CFBundleShortVersionString</key>
+  <string>$VERSION</string>
+  <key>CFBundleVersion</key>
+  <string>$VERSION</string>
+</dict>
+</plist>
+PLIST
+plutil -lint "$PLUGIN/Contents/Info.plist" > /dev/null
 
 for size in 16 32 128 256 512; do
   sips -z "$size" "$size" Packaging/AppIcon.png --out "$ICONSET/icon_${size}x${size}.png" > /dev/null
@@ -63,6 +94,7 @@ PLIST
 plutil -lint "$APP/Contents/Info.plist" > /dev/null
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 
+codesign --force -s - "$PLUGIN"
 codesign --force -s - --identifier com.rafay99.curfew.agent "$APP/Contents/Resources/curfew"
 codesign --force --deep -s - "$APP"
 codesign --verify --deep --strict "$APP"
@@ -72,5 +104,6 @@ ditto -c -k --keepParent "$APP" "$ZIP"
 echo "Curfew $VERSION"
 lipo -archs "$APP/Contents/MacOS/Curfew"
 lipo -archs "$APP/Contents/Resources/curfew"
+lipo -archs "$PLUGIN/Contents/MacOS/CurfewLogin"
 du -sh "$APP" "$ZIP"
 shasum -a 256 "$ZIP"

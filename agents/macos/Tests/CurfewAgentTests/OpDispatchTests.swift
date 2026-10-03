@@ -16,7 +16,7 @@ import Testing
             {"name": "dad", "full": "Dad", "admin": true, "state": "none", "net": "on"}, \
             {"name": "classes", "full": "Ali (classes)", "admin": false, "state": "locked", "net": "on"}, \
             {"name": "gaming", "full": "Ali (gaming)", "admin": false, "state": "active", "net": "on"}], \
-            "timer": null, "caps": ["seconds"], "dry": true}
+            "timer": null, "caps": ["seconds", "net"], "dry": true}
             """)
     }
 
@@ -39,9 +39,7 @@ import Testing
         #expect(try await harness.call(phone, ["cmd": "id"]) == OpError.badOp.body)
         #expect(try await harness.call(phone, ["op": ["status"]]) == OpError.badRequest.body)
         #expect(try await harness.call(phone, [1, 2]) == OpError.badRequest.body)
-        for op in ["lock", "logout", "login", "net_set", "net_clear"] {
-            #expect(try await harness.call(phone, ["op": .string(op), "user": "gaming"]) == OpError.unsupported.body)
-        }
+        #expect(try await harness.call(phone, ["op": "login", "user": "gaming"]) == OpError.unsupported.body)
     }
 
     static let timerCases: [(JSONValue, Int?)] = [

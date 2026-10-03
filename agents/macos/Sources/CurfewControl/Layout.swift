@@ -16,6 +16,9 @@ public struct Layout: Sendable, Equatable {
     public var commandDirectory: String { root + "/usr/local/bin" }
     public var command: String { commandDirectory + "/curfew" }
     public var controlSocket: String { root + "/var/run/curfew.sock" }
+    public var loginDirectory: String { supportDirectory + "/Login" }
+    public var pluginDirectory: String { root + "/Library/Security/SecurityAgentPlugins" }
+    public var plugin: String { pluginDirectory + "/CurfewLogin.bundle" }
 
     public static func dryRunSocket(stateDirectory: String) -> String {
         stateDirectory + "/control.sock"

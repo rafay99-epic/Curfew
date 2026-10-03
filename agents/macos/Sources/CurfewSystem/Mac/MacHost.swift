@@ -21,4 +21,8 @@ public struct MacHost: HostInfo {
         else { return "macOS" }
         return "macOS \(version)"
     }
+
+    public func wakeAddress() -> String? {
+        LocalNetwork.lanAddress().flatMap(LocalNetwork.hardwareAddress)
+    }
 }

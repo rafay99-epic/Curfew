@@ -1,3 +1,4 @@
+import CurfewSystem
 import Darwin
 import Dispatch
 import Foundation
@@ -36,6 +37,9 @@ enum CurfewCLI {
         if ["help", "-h", "--help"].contains(command) {
             print(usage)
             return 0
+        }
+        if command == "lock-screen", args.count == 2, let uid = uid_t(args[1]) {
+            return geteuid() == 0 && ScreenLock.lockAs(uid: uid) ? 0 : 1
         }
         let testRoot = Setup.commands.contains(command) && !settings.root.isEmpty
         if !settings.dry && !testRoot && geteuid() != 0 {

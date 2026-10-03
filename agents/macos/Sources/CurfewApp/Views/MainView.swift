@@ -27,13 +27,30 @@ struct MainView: View {
                 }
                 .padding(.top, 18)
             }
+            if model.stage == .running, model.pairing == nil, let settings = model.settings {
+                SettingsView(settings: settings, busy: model.changing) { model.toggle($0) }
+                    .padding(.top, 26)
+            }
         } actions: {
             actions
+        }
+        .alert("Log in from the phone?", isPresented: Bindable(model).confirmingLogin) {
+            Button("Turn on") { Task { await model.set(.login, true) } }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("The login screen of this Mac gets a Curfew step. It fills in the password only after a paired phone approved that account, once, within two minutes. Remove Curfew to put the login screen back as it was.")
         }
     }
 
     @ViewBuilder private var actions: some View {
         switch model.stage {
+        case .running where model.needsUpdate:
+            SlabButton(title: model.work == .updating ? "Updating…" : "Update the background service", systemImage: "arrow.down.circle") {
+                Task { await model.update() }
+            }
+            .keyboardShortcut(.defaultAction)
+            .disabled(model.work != nil)
+            about
         case .running where model.pairing != nil:
             GhostButton(title: "Cancel") {
                 Task { await model.cancelPairing() }
@@ -72,6 +89,7 @@ struct MainView: View {
         case .setup: [.plain("Curfew is not set up yet.")]
         case .stopped: [.plain("Curfew is installed but not running.")]
         case .denied: [.plain("Only an administrator of this Mac can change Curfew.")]
+        case .running where model.needsUpdate: [.plain("The background service is version \(model.serviceVersion ?? ""). This app is \(model.version). Update it to finish.")]
         case .running where model.phones.isEmpty: [.plain("Curfew is running. No phone is paired yet.")]
         case .running: [.plain("Curfew is running. "), .strong(Self.count(model.phones.count)), .plain(" can control this Mac.")]
         }

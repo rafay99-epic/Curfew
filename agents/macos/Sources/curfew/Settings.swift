@@ -38,7 +38,9 @@ struct Settings: Sendable {
     var layout: Layout { Layout(root: root) }
 
     func system(log: Log) -> SystemServices {
-        guard dry else { return .live(log: log) }
+        guard dry else {
+            return .live(log: log, tool: Bundle.main.executablePath ?? Layout.live.binary, supportDirectory: stateDirectory)
+        }
         if let fake, let loaded = try? FakeSystem.load(path: fake) {
             return .fake(loaded, log: log)
         }

@@ -59,7 +59,7 @@ enum Serve {
     }
 
     private static func startControl(_ settings: Settings, system: SystemServices, port: UInt16, log: Log) -> ControlServer? {
-        let service = ControlService(store: settings.store, host: system.host, port: port, dry: settings.dry, log: log)
+        let service = ControlService(store: settings.store, system: system, port: port, dry: settings.dry, log: log)
         do {
             let server = try ControlServer(
                 path: settings.controlSocket, access: settings.dry ? .owner : .admins,

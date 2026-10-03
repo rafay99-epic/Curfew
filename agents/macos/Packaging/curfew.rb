@@ -1,10 +1,10 @@
 cask "curfew" do
-  version "2.0.0"
+  version "2.1.0"
   sha256 "REPLACE_WITH_THE_SHA256_PRINTED_BY_build-app.sh"
 
   url "https://github.com/rafay99-epic/Curfew/releases/download/v#{version}/Curfew.zip"
   name "Curfew"
-  desc "Lets your phone shut down, time and lock this Mac on the home Wi-Fi"
+  desc "Lets your phone shut down, lock and log in to this Mac on the home Wi-Fi"
   homepage "https://github.com/rafay99-epic/Curfew"
 
   depends_on macos: ">= :sonoma"

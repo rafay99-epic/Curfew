@@ -1,5 +1,6 @@
 @testable import curfew
 import CurfewControl
+import CurfewSystem
 import Foundation
 import os
 import Testing
@@ -22,14 +23,30 @@ final class CommandLog: Sendable {
     var commands: [[String]] { lines.withLock { $0 } }
 }
 
+struct StuckLoginGate: LoginGate {
+    func isInstalled() -> Bool { true }
+    func isEnabled() -> Bool { true }
+    func setEnabled(_ on: Bool) -> Bool { false }
+    func sync(wanted: Bool) -> Bool { false }
+    func knowsPassword(of user: String) -> Bool { false }
+    func approve(_ user: String, until deadline: Double) -> Bool { false }
+    func revoke(_ user: String) {}
+}
+
 @Suite struct InstallerTests {
     let root = "/tmp/cf-root-" + UUID().uuidString.prefix(8)
     var layout: Layout { Layout(root: root) }
 
-    func fakeBinary() throws -> String {
+    func fakeBinary(plugin: Bool = true) throws -> String {
         let path = root + "/source/curfew"
         try FileManager.default.createDirectory(atPath: root + "/source", withIntermediateDirectories: true)
         FileManager.default.createFile(atPath: path, contents: Data("#!/bin/sh\n".utf8))
+        if plugin {
+            let macos = root + "/source/CurfewLogin.bundle/Contents/MacOS"
+            try FileManager.default.createDirectory(atPath: macos, withIntermediateDirectories: true)
+            FileManager.default.createFile(atPath: macos + "/CurfewLogin", contents: Data("plugin".utf8), attributes: [.posixPermissions: 0o755])
+            FileManager.default.createFile(atPath: root + "/source/CurfewLogin.bundle/Contents/Info.plist", contents: Data("<plist/>".utf8))
+        }
         return path
     }
 
@@ -43,6 +60,7 @@ final class CommandLog: Sendable {
         let installer = Installer(layout: layout, runner: nil)
         #expect(try installer.install(from: source).isEmpty)
         #expect(try installer.install(from: source).isEmpty)
+        #expect(FileManager.default.fileExists(atPath: layout.plugin))
         #expect(FileManager.default.contents(atPath: layout.binary) == Data("#!/bin/sh\n".utf8))
         #expect(try mode(layout.binary) == 0o755)
         #expect(try mode(layout.launchDaemon) == 0o644)
@@ -56,6 +74,44 @@ final class CommandLog: Sendable {
         #expect(plist["ProcessType"] == nil)
     }
 
+    @Test func theLoginPluginIsCopiedNextToTheSystemOnes() throws {
+        defer { try? FileManager.default.removeItem(atPath: root) }
+        _ = try Installer(layout: layout, runner: nil).install(from: try fakeBinary())
+        #expect(FileManager.default.contents(atPath: layout.plugin + "/Contents/MacOS/CurfewLogin") == Data("plugin".utf8))
+        #expect(try mode(layout.plugin + "/Contents/MacOS/CurfewLogin") == 0o755)
+        #expect(try mode(layout.plugin + "/Contents/Info.plist") == 0o644)
+        #expect(!FileManager.default.fileExists(atPath: layout.plugin + ".new"))
+        try FileManager.default.removeItem(atPath: root + "/source/CurfewLogin.bundle")
+        let notes = try Installer(layout: layout, runner: nil).install(from: try fakeBinary(plugin: false))
+        #expect(notes == ["This copy of curfew has no login plugin, so login from the phone is not available."])
+    }
+
+    @Test func uninstallRestoresTheLoginScreenBeforeRemovingThePlugin() throws {
+        defer { try? FileManager.default.removeItem(atPath: root) }
+        let log = Log(dry: true) { _ in }
+        let gate = DryRunLoginGate(log: log)
+        _ = gate.setEnabled(true)
+        let teardown = SystemTeardown(login: gate, firewall: DryRunFirewall(log: log), power: DryRunPowerSettings(log: log))
+        let installer = Installer(layout: layout, runner: nil, teardown: teardown)
+        _ = try installer.install(from: try fakeBinary())
+        try FileManager.default.createDirectory(atPath: layout.loginDirectory + "/secret", withIntermediateDirectories: true)
+        #expect(try installer.uninstall(purge: false).isEmpty)
+        #expect(!gate.isEnabled())
+        #expect(!FileManager.default.fileExists(atPath: layout.plugin))
+        #expect(!FileManager.default.fileExists(atPath: layout.loginDirectory))
+    }
+
+    @Test func pluginStaysWhenTheLoginScreenCouldNotBeRestored() throws {
+        defer { try? FileManager.default.removeItem(atPath: root) }
+        let log = Log(dry: true) { _ in }
+        let teardown = SystemTeardown(login: StuckLoginGate(), firewall: DryRunFirewall(log: log), power: DryRunPowerSettings(log: log))
+        let installer = Installer(layout: layout, runner: nil, teardown: teardown)
+        _ = try installer.install(from: try fakeBinary())
+        let notes = try installer.uninstall(purge: true)
+        #expect(notes.count == 1 && notes[0].contains("login plugin was left in place"))
+        #expect(FileManager.default.fileExists(atPath: layout.plugin))
+    }
+
     @Test func anotherCommandAtTheLinkIsLeftAlone() throws {
         defer { try? FileManager.default.removeItem(atPath: root) }
         let source = try fakeBinary()
@@ -63,7 +119,7 @@ final class CommandLog: Sendable {
         FileManager.default.createFile(atPath: layout.command, contents: Data("other".utf8))
         let notes = try Installer(layout: layout, runner: nil).install(from: source)
         #expect(notes == ["Left \(layout.command) alone: another file is there."])
-        try Installer(layout: layout, runner: nil).uninstall(purge: true)
+        _ = try Installer(layout: layout, runner: nil).uninstall(purge: true)
         #expect(FileManager.default.contents(atPath: layout.command) == Data("other".utf8))
     }
 
@@ -73,12 +129,12 @@ final class CommandLog: Sendable {
         _ = try installer.install(from: try fakeBinary())
         let state = layout.supportDirectory + "/state.json"
         FileManager.default.createFile(atPath: state, contents: Data("{}".utf8))
-        try installer.uninstall(purge: false)
+        _ = try installer.uninstall(purge: false)
         for gone in [layout.binary, layout.launchDaemon, layout.command, layout.binDirectory] {
             #expect(!FileManager.default.fileExists(atPath: gone), "\(gone)")
         }
         #expect(FileManager.default.fileExists(atPath: state))
-        try installer.uninstall(purge: true)
+        _ = try installer.uninstall(purge: true)
         #expect(!FileManager.default.fileExists(atPath: layout.supportDirectory))
     }
 
@@ -88,7 +144,7 @@ final class CommandLog: Sendable {
         let installer = Installer(layout: layout, runner: log.runner)
         _ = try installer.install(from: try fakeBinary())
         try installer.restart()
-        try installer.uninstall(purge: false)
+        _ = try installer.uninstall(purge: false)
         let fw = Installer.firewall
         #expect(log.commands == [
             ["/bin/launchctl", "bootout", "system/com.rafay99.curfew"],
@@ -115,6 +171,7 @@ final class CommandLog: Sendable {
         #expect(settings.layout.binary == root + "/Library/Application Support/Curfew/bin/curfew")
         #expect(try Setup.installer(settings, command: "install", options: []).runner == nil)
         #expect(try Setup.installer(settings, command: "uninstall", options: ["--purge"]).runner == nil)
+        #expect(try Setup.installer(settings, command: "uninstall", options: ["--purge"]).teardown == nil)
         #expect(throws: Setup.SetupError.self) { try Setup.installer(settings, command: "install", options: ["--purge"]) }
         let live = Settings(argv: ["install"], environment: [:])
         #expect(try Setup.installer(live, command: "install", options: ["--files-only"]).runner == nil)
