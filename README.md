@@ -13,7 +13,7 @@ From the phone you can:
 
 It works whoever is logged in on the laptop, and also when nobody is logged in yet.
 
-There are two parts: a small service that you install once on each laptop, and an app on your phone.
+There are two parts: a small service that you install once on each laptop, and an app on your phone. Macs work too: see [Macs](#macs).
 
 ---
 
@@ -165,6 +165,41 @@ It is a remote control, not a lock. A determined child can still:
 
 With only the password of their own standard account they cannot stop, change or remove Curfew, read its keys, or turn their internet back on.
 
+## Macs
+
+Install with Homebrew, then open Curfew from Applications:
+
+```
+brew install --cask rafay99-epic/tap/curfew
+```
+
+Click **Set up** and type your Mac password once. That installs the background service (about 3 MB, idle at 0% CPU). Then click **Pair a phone** and scan the code with the app. The window can be closed; the service keeps running.
+
+The Curfew window also has three settings:
+
+- **Log in from the phone** (off at first). It adds a step to the Mac's login screen. After you approve an account in the app, choose that account on the login screen, or press Enter on the lock screen, with the password field empty. It works once, within two minutes. The Mac fills in the password that was last typed at its login screen, so type each account's password there once after turning this on. If macOS does not accept the step, the setting stays off and the login screen is not changed.
+- **Wake for the phone** (on). A sleeping Mac shows as **Off or asleep**, and the app offers **Wake and shut down**. Over a cable this is reliable. Over Wi-Fi a Mac only wakes with an Apple TV or HomePod at home.
+- **Stay awake on power** (off). Keeps the Mac reachable while it is plugged in.
+
+A shut-down timer also asks the Mac to wake itself at the end, so a closed lid does not stop it.
+
+Differences from Ubuntu:
+
+- **Internet for one account** blocks the programs of that account. Apple services that work on its behalf can still get through.
+- **Lock** only locks the account on the screen. An account in the background already needs its password to come back.
+- **FileVault:** after a full restart, including one sent from the phone, the Mac shows **Off** until someone types a password at the startup screen. Login from the phone cannot do that first unlock.
+- The app is not signed by Apple. Homebrew clears the download warning; a zip downloaded by hand needs **Open Anyway** once in System Settings, Privacy & Security.
+
+To remove it, click **About**, then **Remove Curfew from this Mac**, or run:
+
+```
+brew uninstall --cask curfew        # add --zap to also forget the paired phones
+```
+
+Removing puts the login screen back as it was before anything else is deleted.
+
+If the login screen ever stops accepting passwords after turning on login from the phone, log in over SSH from another computer as an admin and run `sudo curfew uninstall`. Without SSH, start the Mac in Recovery, unlock the disk in Disk Utility, open Terminal, and run `rm "/Volumes/Macintosh HD - Data/private/var/db/auth.db"`, then restart: macOS rebuilds its default login rules.
+
 ---
 
 ## For whoever maintains this
@@ -177,6 +212,9 @@ With only the password of their own standard account they cannot stop, change or
 | `tools/release.sh` | publishes a new version of the laptop side (see below) |
 | `agents/linux/test_agent.py` | end-to-end tests against a real agent in dry-run mode: `python3 agents/linux/test_agent.py` |
 | `android/` | the app (Kotlin, Jetpack Compose). Build with `android/build.sh` after `tools/setup-toolchain.sh` |
+| `agents/macos/` | the Mac side in Swift: the `curfew` service and command, the Curfew app, and the C login plugin (`Sources/CurfewLogin`). Test with `swift test` |
+| `agents/macos/Packaging/` | `build-app.sh` builds `Curfew.app` and `Curfew.zip`; `curfew.rb` is the Homebrew cask for `rafay99-epic/homebrew-tap` |
+| `tools/interop/compare.sh` | runs the same client against the Python and Swift agents and diffs the answers |
 | `protocol/API.md` | the small network protocol, for a second client later |
 | `tools/` | toolchain setup, emulator helpers, demo data |
 
