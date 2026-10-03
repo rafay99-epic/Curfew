@@ -1,0 +1,41 @@
+android/app/src/main/java/com/rafay99/curfew/core/StoreData.kt
+  s_71bdc913492ab0::t_9fe7e38e007214 12,22,54-55
+android/app/src/main/java/com/rafay99/curfew/core/Wake.kt
+  s_71bdc913492ab0::t_9fe7e38e007214 1-19
+android/app/src/test/java/com/rafay99/curfew/core/WakeTest.kt
+  s_71bdc913492ab0::t_b5f713af38b082 1-50
+android/app/src/main/java/com/rafay99/curfew/ui/screens/computer/ComputerScreen.kt
+  s_71bdc913492ab0::t_81888603c97d17 10,30,59,89-98,112-125,129,166-168
+  s_71bdc913492ab0::t_49a3506737087e 169
+android/app/src/main/java/com/rafay99/curfew/core/Computer.kt
+  s_71bdc913492ab0::t_9fe7e38e007214 6
+android/app/src/main/java/com/rafay99/curfew/core/Status.kt
+  s_71bdc913492ab0::t_9fe7e38e007214 28,61
+android/app/build.gradle.kts
+  s_71bdc913492ab0::t_81888603c97d17 23-24
+android/app/src/main/java/com/rafay99/curfew/ui/screens/account/AccountScreen.kt
+  s_71bdc913492ab0::t_81888603c97d17 31,94-96,148-158
+android/app/src/main/java/com/rafay99/curfew/data/Repo.kt
+  s_71bdc913492ab0::t_03c7c432313268 129-131,180-193
+  s_71bdc913492ab0::t_79fca8da676f11 194-195
+android/app/src/main/java/com/rafay99/curfew/data/Wake.kt
+  s_71bdc913492ab0::t_03c7c432313268 1-23
+android/app/src/main/java/com/rafay99/curfew/core/Format.kt
+  s_71bdc913492ab0::t_9fe7e38e007214 40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f7dc860aeb895f1e01abcc415e33cfcf021f1a9f",
+  "prompts": {},
+  "sessions": {
+    "s_71bdc913492ab0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "506c9f2e-cb42-48fe-8268-6d16d168daa8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Abdul Rafay <99marafay@gmail.com>"
+    }
+  }
+}
